@@ -20,6 +20,18 @@ internal extension Encodable {
         return nil
     }
 
+    func convertToString() throws -> String {
+        let msg = try JSONEncoder().encode(self)
+
+        guard let jsonString = String(data: msg, encoding: .utf8) else {
+            throw RtmBaseErrorInfo(
+                errorCode: .channelInvalidMessage, operation: #function,
+                reason: "message could not convert to JSON String"
+            )
+        }
+        return jsonString
+    }
+
 }
 
 /// A class that serves as a client-side real-time communication kit.
@@ -317,14 +329,22 @@ open class RtmClientKit: NSObject {
         to channelName: String,
         withOption publishOption: RtmPublishOptions?,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<AgoraRtmCommonResponse, RtmPublishErrorInfo>) -> Void)? = nil
     ) {
-        guard let msg = message.convertToNSObject() else {
-            completion?(.failure(RtmBaseErrorInfo(errorCode: .channelInvalidMessage, operation: #function, reason: "message could not convert to NSObject")))
-//            completion?(.failure(RtmPublishErrorInfo(errorCode: .publishMessageFailed, operation: "publish", reason: "message could not convert to NSObject")))
+        let msgString: String
+        do {
+            msgString = try message.convertToString()
+        } catch let error as RtmBaseErrorInfo {
+            completion?(.failure(error))
+            return
+        } catch {
+            completion?(.failure(RtmBaseErrorInfo(
+                errorCode: .channelInvalidMessage, operation: #function,
+                reason: "could not encode message: \(error.localizedDescription)"
+            )))
             return
         }
-        agoraRtmClient.publish(channelName, message: msg, withOption: publishOption?.objcVersion) { resp, pubErr in
+
+        agoraRtmClient.publish(channelName, message: msgString as NSString, withOption: publishOption?.objcVersion) { resp, pubErr in
             guard let completion = completion else { return }
             guard let resp = resp else {
                 completion(.failure(RtmBaseErrorInfo(from: pubErr) ?? .noKnownError(operation: #function)))
@@ -342,17 +362,25 @@ open class RtmClientKit: NSObject {
     ///   - channelName: The name of the channel to publish the message to.
     ///   - publishOption: The options for publishing the message.
     ///
-    /// This method can throw an ``RtmBaseErrorInfo`` error if the publish operation fails.
+    /// This method will throw an ``RtmBaseErrorInfo`` if the encoding or publish operation fails.
     @available(iOS 13.0.0, *) @discardableResult
-    public func publish(message: Codable, to channelName: String, withOption publishOption: RtmPublishOptions?) async throws -> RtmCommonResponse {
-        guard let msg = message.convertToNSObject() else {
-            throw RtmBaseErrorInfo(errorCode: .channelInvalidMessage, operation: #function, reason: "message could not convert to NSObject")
-//            throw RtmPublishErrorInfo(errorCode: .publishMessageFailed, operation: "publish", reason: "could not convert message to NSObject")
+    public func publish(
+        message: Codable, to channelName: String, withOption publishOption: RtmPublishOptions?
+    ) async throws -> RtmCommonResponse {
+        let msgString: String
+        do {
+            msgString = try message.convertToString()
+        } catch let error as RtmBaseErrorInfo {
+            throw error
+        } catch {
+            throw RtmBaseErrorInfo(
+                errorCode: .channelInvalidMessage, operation: #function,
+                reason: "could not encode message: \(error.localizedDescription)"
+            )
         }
-        let (resp, err) = await agoraRtmClient.publish(channelName, message: msg, withOption: publishOption?.objcVersion)
+        let (resp, err) = await agoraRtmClient.publish(channelName, message: msgString as NSString, withOption: publishOption?.objcVersion)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw RtmPublishErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }

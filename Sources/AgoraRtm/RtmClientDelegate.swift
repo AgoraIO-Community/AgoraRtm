@@ -15,7 +15,7 @@ public protocol RtmClientDelegate: AnyObject {
     ///
     /// - Parameters:
     ///   - rtmClient: The `RtmClientKit` instance that received the message event.
-    ///   - event: The `RtmMessageEvent` representing the received message event.
+    ///   - event: The ``RtmMessageEvent`` representing the received message event.
     func rtmClient(_ rtmClient: RtmClientKit, didReceiveMessageEvent event: RtmMessageEvent)
 
     /// Called when a presence event is received.

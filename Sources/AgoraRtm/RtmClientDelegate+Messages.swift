@@ -44,11 +44,39 @@ public struct RtmMessage {
         self.type = type
     }
 
-    /// Retrieves the payload data of the message as `Data` if possible.
+    /// Retrieves the payload data of the message as `String` if possible.
     ///
-    /// - Returns: The payload data of the message as `Data` if it is of type `Data`, otherwise `nil`.
-    public func getData() -> Data? {
-        return data as? Data
+    /// - Returns: The payload data of the message as `String` if it can, otherwise `nil`.
+    public func getString() -> String? {
+        return data as? String
+    }
+
+    /// Decodes a JSON string into a Codable value of the specified type.
+    ///
+    /// Use this function to attempt to decode a JSON string into a Codable value of the specified type.
+    /// If the decoding is successful, the decoded value is returned; otherwise, nil is returned.
+    ///
+    /// - Parameters:
+    ///   - type: The Codable type to decode the JSON string into.
+    /// - Returns: A decoded Codable value of the specified type, or nil if decoding fails.
+    public func decodeMessage<T: Codable>(as type: T.Type) -> T? {
+        // Retrieve the JSON string to decode. Then convert the JSON string to UTF-8 encoded data.
+        guard let dataStr = getString(),
+              let jsonData = dataStr.data(using: .utf8)
+        else { return nil }
+
+        do {
+            // Initialize a JSON decoder.
+            let decoder = JSONDecoder()
+
+            /// Attempt to decode the JSON data into the specified Codable type.
+            let decodedValue = try decoder.decode(type, from: jsonData)
+            return decodedValue
+        } catch {
+            print("decode error: \(error.localizedDescription)")
+            /// Decoding failed, return nil.
+            return nil
+        }
     }
 
     /// Initializes an instance of `RtmMessage` with the provided AgoraRtmMessage object.
