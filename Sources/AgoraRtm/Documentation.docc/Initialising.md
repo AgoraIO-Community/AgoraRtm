@@ -1,5 +1,7 @@
 # Initialising
 
+Set up ``RtmClientConfig`` and ``RtmClientKit`` for Signaling
+
 ## Overview
 
 This topic provides information on how to initialize the ``RtmClientConfig`` instance in your Agora Real-time Messaging SDK package.

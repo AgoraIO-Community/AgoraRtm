@@ -262,14 +262,14 @@ open class RtmClientKit: NSObject {
     ///
     /// - Parameters:
     ///   - channelName: The name of the channel to subscribe to.
-    ///   - option: The options for subscribing to the channel.
+    ///   - features: The options for subscribing to the channel.
     ///
     /// This method can throw a ``RtmCommonResponse`` error if the subscription operation fails.
     @available(iOS 13.0.0, *) @discardableResult
     public func subscribe(
-        toChannel channelName: String, option: RtmSubscribeFeatures = []
+        toChannel channelName: String, features: RtmSubscribeFeatures = []
     ) async throws -> RtmCommonResponse {
-        let (resp, err) = await agoraRtmClient.subscribe(withChannel: channelName, option: option.objcVersion)
+        let (resp, err) = await agoraRtmClient.subscribe(withChannel: channelName, option: features.objcVersion)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
 //            throw RtmSubscribeErrorInfo(from: err) ?? .noKnownError
@@ -327,7 +327,7 @@ open class RtmClientKit: NSObject {
     public func publish(
         message: Codable,
         to channelName: String,
-        withOption publishOption: RtmPublishOptions?,
+        withOption publishOption: RtmPublishOptions? = nil,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
     ) {
         let msgString: String
@@ -365,7 +365,7 @@ open class RtmClientKit: NSObject {
     /// This method will throw an ``RtmBaseErrorInfo`` if the encoding or publish operation fails.
     @available(iOS 13.0.0, *) @discardableResult
     public func publish(
-        message: Codable, to channelName: String, withOption publishOption: RtmPublishOptions?
+        message: Codable, to channelName: String, withOption publishOption: RtmPublishOptions? = nil
     ) async throws -> RtmCommonResponse {
         let msgString: String
         do {

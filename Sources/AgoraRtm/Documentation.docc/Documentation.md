@@ -10,6 +10,7 @@ AgoraRtm is a class that provides real-time messaging functionalities for applic
 
 - <doc:Initialising>
 - <doc:Events>
+- <doc:Messages>
 
 ### Core Classes
 

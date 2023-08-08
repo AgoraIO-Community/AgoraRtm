@@ -80,7 +80,7 @@ public protocol RtmClientDelegate: AnyObject {
 }
 
 // Provide default implementations for optional methods using protocol extensions
-public extension RtmClientDelegate {
+internal extension RtmClientDelegate {
     func rtmClient(_ rtmClient: RtmClientKit, didReceiveMessageEvent event: RtmMessageEvent) {}
     func rtmClient(_ rtmClient: RtmClientKit, didReceivePresenceEvent event: RtmPresenceEvent) {}
     func rtmClient(_ rtmClient: RtmClientKit, didReceiveLockEvent event: RtmLockEvent) {}
