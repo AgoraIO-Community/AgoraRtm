@@ -1,0 +1,192 @@
+//
+//  File.swift
+//  
+//
+//  Created by Max Cobb on 08/08/2023.
+//
+
+import AgoraRtmKit
+
+/// Options for querying presence information in the Agora RTM system.
+public struct RtmPresenceOptions {
+    /// Options to include in the presence query result.
+    public struct IncludeOptions: OptionSet {
+        public let rawValue: Int
+
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+
+        /// Include user ID in the query result.
+        public static let userId = IncludeOptions(rawValue: 1 << 0)
+
+        /// Include user state in the query result.
+        public static let userState = IncludeOptions(rawValue: 1 << 1)
+
+        /// Include both user ID and user state in the query result.
+        public static let all: IncludeOptions = [.userId, .userState]
+    }
+
+    /// The options to include in the query result.
+    public var include: IncludeOptions
+
+    /// The paging object used for pagination.
+    public var page: String
+
+    public init(include: IncludeOptions = [], page: String) {
+        self.include = include
+        self.page = page
+    }
+
+    internal var objcVersion: AgoraRtmPresenceOptions {
+        let objcOpt = AgoraRtmPresenceOptions()
+        objcOpt.includeUserId = self.include.contains(.userId)
+        objcOpt.includeState = self.include.contains(.userState)
+        objcOpt.page = self.page
+        return objcOpt
+    }
+}
+
+/// Represents options for querying presence information.
+public struct RtmPresenceQueryOptions {
+    /// The paging object used for pagination.
+    public var page: String
+
+    public init(page: String) {
+        self.page = page
+    }
+}
+
+/// Represents a presence management utility for Agora Real-time Messaging SDK.
+///
+/// Use this class to query the presence information of users in a channel, set user states, and more.
+public class RtmPresence {
+
+    internal let presence: AgoraRtmPresence
+
+    internal init?(_ presence: AgoraRtmPresence?) {
+        guard let presence else { return nil }
+        self.presence = presence
+    }
+
+    /// Queries who has joined the specified channel.
+    ///
+    /// - Parameters:
+    ///   - channel: The type and name of the channel.
+    ///   - options: The query option. Default is nil.
+    ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhoNowResponse, RtmBaseErrorInfo>`.
+    public func whoNow(
+        inChannel channel: RtmChannelDetails,
+        options: RtmPresenceOptions? = nil,
+        completion: @escaping (Result<RtmWhoNowResponse, RtmBaseErrorInfo>) -> Void
+    ) {
+        let (channelName, channelType) = channel.objcVersion
+        presence.whoNow(
+            channelName, channelType: channelType,
+            options: options?.objcVersion
+        ) { response, error in
+            if let response = response {
+                completion(.success(.init(response)))
+                return
+            }
+            completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+        }
+    }
+
+
+    /// Queries which channels the specified user has joined.
+    ///
+    /// - Parameters:
+    ///   - userId: The ID of the user.
+    ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhereNowResponse, RtmBaseErrorInfo>`.
+    public func whereNow(
+        userId: String,
+        completion: @escaping (Result<RtmWhereNowResponse, RtmBaseErrorInfo>) -> Void
+    ) {
+        presence.whereNow(userId) { response, error in
+            if let response = response {
+                completion(.success(.init(response)))
+                return
+            }
+            completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+        }
+    }
+
+    /// Sets the user's state.
+    ///
+    /// - Parameters:
+    ///   - channel: The type and name of the channel.
+    ///   - items: The state items of the user.
+    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmBaseErrorInfo>`.
+    public func setState(
+        ofChannel channel: RtmChannelDetails,
+        items: [String: String],
+        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+    ) {
+        let (channelName, channelType) = channel.objcVersion
+        presence.setState(
+            channelName, channelType: channelType,
+            items: items.map {
+                let stateItem = AgoraRtmStateItem()
+                stateItem.key = $0.key
+                stateItem.value = $0.value
+                return stateItem
+            },
+            completion: { response, error in
+                guard let completion else { return }
+                if let response = response {
+                    completion(.success(.init(response)))
+                    return
+                }
+                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+            })
+    }
+
+    /// Deletes the user's state.
+    ///
+    /// - Parameters:
+    ///   - channel: The type and name of the channel.
+    ///   - keys: The keys of the state items to be removed.
+    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmBaseErrorInfo>`.
+    public func removeState(
+        fromChannel channel: RtmChannelDetails,
+        keys: [String],
+        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+    ) {
+        let (channelName, channelType) = channel.objcVersion
+        presence.removeState(
+            channelName, channelType: channelType,
+            items: keys
+        ) { response, error in
+            guard let completion else { return }
+            if let response = response {
+                completion(.success(.init(response)))
+                return
+            }
+            completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+        }
+    }
+
+    /// Gets the user's state.
+    ///
+    /// - Parameters:
+    ///   - userId: The ID of the user.
+    ///   - channel: The type and name of the channel.
+    ///   - completion: The completion handler to be called with the operation result, `Result<RtmPresenceGetStateResponse, RtmBaseErrorInfo>`.
+    public func getState(
+        ofUser userId: String,
+        fromChannel channel: RtmChannelDetails,
+        completion: @escaping (Result<RtmPresenceGetStateResponse, RtmBaseErrorInfo>) -> Void
+    ) {
+        let (channelName, channelType) = channel.objcVersion
+        presence.getState(
+            channelName, channelType: channelType,
+            userId: userId) { response, error in
+                if let response = response {
+                    completion(.success(.init(response)))
+                    return
+                }
+                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+            }
+    }
+}
