@@ -75,7 +75,7 @@ The async method will throw an error of type ``RtmBaseErrorInfo`` if there's any
 
 ### Delegate Message Events
 
-All messages will arrive in ``RtmClientDelegate/rtmClient(_:didReceiveMessageEvent:)``, and can be handled in the following ways
+All messages will arrive in ``RtmClientDelegate/rtmClient(_:didReceiveMessageEvent:)-56d2u``, and can be handled in the following ways
 
 #### Text Messages
 
