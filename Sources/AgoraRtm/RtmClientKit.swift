@@ -30,7 +30,7 @@ internal extension Encodable {
 open class RtmClientKit: NSObject {
 
     /// The Agora real-time communication client.
-    internal let agoraRtmClient: AgoraRtmClientKit
+    internal var agoraRtmClient: AgoraRtmClientKit!
 
     /// The storage used by the Agora RTM client.
     public lazy var storage: RtmStorage? = { .init(storage: agoraRtmClient.getStorage()) }()
@@ -50,13 +50,12 @@ open class RtmClientKit: NSObject {
     ///   - config: Configuration for the Agora RTM client.
     ///   - delegate: The delegate for the Agora RTM client.
     public init?(config: RtmClientConfig, delegate: RtmClientDelegate) {
+        super.init()
         guard let rtmClient = AgoraRtmClientKit(
-            config: config.config, delegate: nil
+            config: config.config, delegate: self
         ) else { return nil }
         self.delegate = delegate
         self.agoraRtmClient = rtmClient
-        super.init()
-        agoraRtmClient.agoraRtmDelegate = self
     }
 
     /// The delegate for the Agora RTM client.
@@ -90,7 +89,7 @@ open class RtmClientKit: NSObject {
     ///
     /// - Parameter token: The token to log in with.
     /// - Returns: A ``RtmCommonResponse`` if the login is successful, otherwise throws an ``RtmBaseErrorInfo`` error.
-    @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func login(byToken token: String? = nil) async throws -> RtmCommonResponse {
         let (loginResp, err) = await agoraRtmClient.login(byToken: token)
         if let response = loginResp {
@@ -122,6 +121,7 @@ open class RtmClientKit: NSObject {
     ///
     /// This method can throw an ``RtmBaseErrorInfo`` error if the logout operation fails.
     @available(iOS 13.0.0, *)
+    @discardableResult
     public func logout() async throws -> RtmCommonResponse {
         let (resp, err) = await agoraRtmClient.logout()
         guard let resp else {
@@ -157,7 +157,7 @@ open class RtmClientKit: NSObject {
     ///   - token: The new token to renew.
     ///
     /// This method can throw a ``RtmBaseErrorInfo`` error if the token renewal operation fails.
-    @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func renewToken(_ token: String) async throws -> RtmCommonResponse {
         let (resp, err) = await agoraRtmClient.renewToken(token)
         guard let resp = resp else {
@@ -253,7 +253,7 @@ open class RtmClientKit: NSObject {
     ///   - option: The options for subscribing to the channel.
     ///
     /// This method can throw a ``RtmCommonResponse`` error if the subscription operation fails.
-    @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func subscribe(
         toChannel channelName: String, option: RtmSubscribeFeatures = []
     ) async throws -> RtmCommonResponse {
@@ -293,7 +293,7 @@ open class RtmClientKit: NSObject {
     ///   - channelName: The name of the channel to unsubscribe from.
     ///
     /// This method can throw a ``RtmCommonResponse`` error if the unsubscription operation fails.
-    @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func unsubscribe(fromChannel channelName: String) async throws -> RtmCommonResponse {
         let (resp, err) = await agoraRtmClient.unsubscribe(withChannel: channelName)
         guard let resp = resp else {
@@ -343,7 +343,7 @@ open class RtmClientKit: NSObject {
     ///   - publishOption: The options for publishing the message.
     ///
     /// This method can throw an ``RtmBaseErrorInfo`` error if the publish operation fails.
-    @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func publish(message: Codable, to channelName: String, withOption publishOption: RtmPublishOptions?) async throws -> RtmCommonResponse {
         guard let msg = message.convertToNSObject() else {
             throw RtmBaseErrorInfo(errorCode: .channelInvalidMessage, operation: #function, reason: "message could not convert to NSObject")

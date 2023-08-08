@@ -20,7 +20,7 @@ public class RtmPublishOptions {
     /// - Parameters:
     ///   - customType: The custom type of the message, up to 32 bytes for customization.
     ///   - sendTs: The time to calibrate data with media, only valid when a user joins the topic with `syncWithMedia` in a stream channel.
-    init(customType: String, sendTs: UInt64 = 0) {
+    public init(customType: String, sendTs: UInt64 = 0) {
         self.customType = customType
         self.sendTs = sendTs
     }
