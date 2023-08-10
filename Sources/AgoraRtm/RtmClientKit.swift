@@ -428,4 +428,11 @@ public extension RtmClientKit {
         ) else { return nil }
         return AgoraRtmClientKit.getErrorReason(agoraErr)
     }
+
+    /// Gets the version of Agora RTM SDK.
+    /// 
+    /// - Returns: The version string for the RTM engine.
+    static func getVersion() -> String {
+        AgoraRtmClientKit.getVersion()
+    }
 }
