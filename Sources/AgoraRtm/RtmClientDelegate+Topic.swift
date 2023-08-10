@@ -20,7 +20,7 @@ public enum RtmTopicEventType: Int {
 }
 
 /// Represents a topic event in the Agora RTM system.
-public class RtmTopicEvent: NSObject {
+public class RtmTopicEvent {
     /// The type of the topic event.
     public var type: RtmTopicEventType
     /// The channel in which the topic event was triggered.
@@ -37,12 +37,11 @@ public class RtmTopicEvent: NSObject {
         self.channelName = agorartmTopicEvent.channelName
         self.publisher = agorartmTopicEvent.publisher
         self.topicInfos = agorartmTopicEvent.topicInfos.map { RtmTopicInfo(from: $0) }
-        super.init()
     }
 }
 
 /// Represents topic information in the Agora RTM system.
-public class RtmTopicInfo: NSObject {
+public class RtmTopicInfo {
     /// The name of the topic.
     public var topic: String
     /// The publisher array.
@@ -53,7 +52,6 @@ public class RtmTopicInfo: NSObject {
     internal init(from agorartmTopicInfo: AgoraRtmTopicInfo) {
         self.topic = agorartmTopicInfo.topic
         self.publishers = agorartmTopicInfo.publishers.map { RtmPublisherInfo(from: $0) }
-        super.init()
     }
 }
 

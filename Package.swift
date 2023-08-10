@@ -11,7 +11,7 @@ let package = Package(
             targets: ["AgoraRtm"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/AgoraIO/AgoraRTM_iOS.git", branch: "test-2.x")
+        .package(url: "https://github.com/AgoraIO/AgoraRTM_iOS.git", exact: .init(stringLiteral: "2.1.4-nightly.23.08.10"))
     ],
     targets: [
         .target(

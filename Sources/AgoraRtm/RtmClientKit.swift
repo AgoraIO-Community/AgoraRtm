@@ -400,14 +400,6 @@ open class RtmClientKit: NSObject {
         }
     }
 
-    /// Gets the error reason for the given error code.
-    ///
-    /// - Parameter errorCode: The error code for which to get the reason.
-    /// - Returns: The error reason string or nil if the error code is invalid.
-    public func getErrorReason(_ errorCode: Int) -> String? {
-        guard let internalErr = AgoraRtmErrorCode(rawValue: errorCode) else { return nil }
-        return agoraRtmClient.getErrorReason(internalErr)
-    }
 
     /// Creates a stream channel with the provided name.
     ///
@@ -422,5 +414,18 @@ open class RtmClientKit: NSObject {
     /// - Returns: The error code indicating the result of the destruction, or nil if successful.
     public func destroy() -> RtmBaseErrorCode? {
         RtmBaseErrorCode(rawValue: agoraRtmClient.destroy().rawValue)
+    }
+}
+
+public extension RtmClientKit {
+    /// Gets the error reason for the given error code.
+    ///
+    /// - Parameter errorCode: The error code for which to get the reason.
+    /// - Returns: The error reason string or nil if the error code is invalid.
+    static func getErrorReason(_ errorCode: RtmBaseErrorCode) -> String? {
+        guard let agoraErr = AgoraRtmErrorCode(
+            rawValue: errorCode.rawValue
+        ) else { return nil }
+        return AgoraRtmClientKit.getErrorReason(agoraErr)
     }
 }

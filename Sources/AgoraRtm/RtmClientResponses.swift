@@ -70,7 +70,7 @@ public class RtmMetadataItem {
     /// Initializes an instance of `RtmMetadataItem` with an `AgoraRtmMetadataItem` object.
     ///
     /// - Parameter agoraMetadataItem: The `AgoraRtmMetadataItem` object to initialize from.
-    public init(_ agoraMetadataItem: AgoraRtmMetadataItem) {
+    internal init(_ agoraMetadataItem: AgoraRtmMetadataItem) {
         self.agoraMetadataItem = agoraMetadataItem
     }
 }

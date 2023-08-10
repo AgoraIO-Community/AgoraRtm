@@ -94,7 +94,7 @@ public struct RtmPresenceEvent {
 
     /// Initializes an instance of `RtmPresenceEvent`.
     /// - Parameter presence: The AgoraRtmPresenceEvent object to extract presence event details from.
-    public init(_ presence: AgoraRtmPresenceEvent) {
+    internal init(_ presence: AgoraRtmPresenceEvent) {
         self.type = .init(rawValue: presence.type.rawValue) ?? .none
         self.channelType = .init(rawValue: presence.channelType.rawValue) ?? .none
         self.channelName = presence.channelName
