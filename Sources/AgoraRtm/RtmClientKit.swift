@@ -163,6 +163,7 @@ open class RtmClientKit: NSObject {
             completion(.success(.init(resp)))
         }
     }
+
     /// Asynchronously renews the token for the Agora RTM client.
     ///
     /// - Parameters:
@@ -184,15 +185,18 @@ open class RtmClientKit: NSObject {
     ///
     /// Create an instance of ``RtmSubscribeFeatures`` by combining the individual options using the `OptionSet` syntax.
     /// For example:
-    /// ```
-    /// let subscriptionOptions: RtmSubscribeFeatures = [.withMessage, .withMetadata]
+    ///
+    /// ```swift
+    /// let subscriptionOptions: RtmSubscribeFeatures = [
+    ///     .messages, .metadata
+    /// ]
+    ///
+    /// clientKit.subscribe(
+    ///     toChannel: "example", features: subscriptionOptions
+    /// )
     /// ```
     ///
-    /// Once you have the desired subscription options, you can convert them to the corresponding `AgoraRtmSubscribeOptions`
-    /// object using the `toObjectiveC()` method.
-    ///
-    /// - Note: These options correspond to the options available in the `AgoraRtmSubscribeOptions` Objective-C class.
-    /// - SeeAlso: ``RtmClientKit/subscribe(toChannel:features:completion)``
+    /// - See Also: ``RtmClientKit/subscribe(toChannel:features:completion)``
     public struct RtmSubscribeFeatures: OptionSet {
         public let rawValue: UInt
 
@@ -430,7 +434,7 @@ public extension RtmClientKit {
     }
 
     /// Gets the version of Agora RTM SDK.
-    /// 
+    ///
     /// - Returns: The version string for the RTM engine.
     static func getVersion() -> String {
         AgoraRtmClientKit.getVersion()
