@@ -383,7 +383,8 @@ open class RtmClientKit: NSObject {
 /// )
 /// ```
 ///
-/// - See Also: ``RtmClientKit/subscribe(toChannel:features:completion)``
+/// - See Also: ``RtmClientKit/subscribe(toChannel:features:)`` and
+///          ``RtmClientKit/subscribe(toChannel:features:completion:)``
 public struct RtmSubscribeFeatures: OptionSet {
     public let rawValue: UInt
 

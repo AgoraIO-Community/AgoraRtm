@@ -16,7 +16,8 @@ open class RtmStreamChannel: NSObject {
 
     /// Initializes an ``RtmStreamChannel`` instance with the specified `AgoraRtmStreamChannel`.
     ///
-    /// - Parameter channel: The `AgoraRtmStreamChannel` to wrap. Pass `nil` to create an `RtmStreamChannel` instance with no underlying channel.
+    /// - Parameter channel: The `AgoraRtmStreamChannel` to wrap. Pass `nil` to create
+    ///                      an `RtmStreamChannel` instance with no underlying channel.
     internal init?(channel: AgoraRtmStreamChannel?) {
         guard let channel else { return nil }
         self.channel = channel
@@ -32,18 +33,27 @@ open class RtmStreamChannel: NSObject {
     public func join(
         with option: RtmJoinChannelOption,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<AgoraRtmCommonResponse, JoinErrorInfo>) -> Void)? = nil
     ) {
         channel.join(with: option.objcVersion) { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
+                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
+                    .noKnownError(operation: #function)))
 //                return completion(.failure(JoinErrorInfo(from: errInfo) ?? .noKnownError))
             }
             completion(.success(.init(resp)))
         }
     }
 
+    /// Asynchronously joins a channel with specified options.
+    ///
+    /// Use this method to join a channel with the desired settings, allowing more granular control over channel behavior.
+    ///
+    /// - Parameter option: The configuration options for joining the channel, encapsulated in an ``RtmJoinChannelOption`` object.
+    ///
+    /// - Throws: ``RtmBaseErrorInfo`` if an error occurs during the join attempt.
+    ///
+    /// - Returns: A response confirming the result of the join attempt, encapsulated in an ``RtmCommonResponse`` object.
     @available(iOS 13.0.0, *)
     public func join(
         with option: RtmJoinChannelOption
@@ -51,7 +61,6 @@ open class RtmStreamChannel: NSObject {
         let (resp, err) = await channel.join(with: option.objcVersion)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw RtmSubscribeErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }
@@ -63,13 +72,12 @@ open class RtmStreamChannel: NSObject {
     ///                         The result will contain either a successful ``RtmCommonResponse`` or an error of type ``RtmBaseErrorInfo``.
     public func leave(
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<AgoraRtmCommonResponse, LeaveErrorInfo>) -> Void)? = nil
     ) {
         channel.leave { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-//                return completion(.failure(LeaveErrorInfo(from: errInfo) ?? .noKnownError))
+                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
+                    .noKnownError(operation: #function)))
             }
             completion(.success(.init(resp)))
         }
@@ -80,7 +88,6 @@ open class RtmStreamChannel: NSObject {
         let (resp, err) = await channel.leave()
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw LeaveErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }
@@ -95,13 +102,12 @@ open class RtmStreamChannel: NSObject {
     public func renewToken(
         _ token: String,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<AgoraRtmCommonResponse, RtmRenewTokenErrorInfo>) -> Void)? = nil
     ) {
         channel.renewToken(token, completion: { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-//                return completion(.failure(RtmRenewTokenErrorInfo(from: errInfo) ?? .noKnownError))
+                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
+                    .noKnownError(operation: #function)))
             }
             completion(.success(.init(resp)))
         })
@@ -112,7 +118,6 @@ open class RtmStreamChannel: NSObject {
         let (resp, err) = await channel.renewToken(token)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw RtmRenewTokenErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }
@@ -127,13 +132,12 @@ open class RtmStreamChannel: NSObject {
     public func joinTopic(
         _ topic: String, with option: RtmJoinTopicOption?,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<RtmCommonResponse, JoinTopicErrorInfo>) -> Void)? = nil
     ) {
         channel.joinTopic(topic, with: option?.objcVersion, completion:  { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-//                return completion(.failure(JoinTopicErrorInfo(from: errInfo) ?? .noKnownError))
+                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
+                    .noKnownError(operation: #function)))
             }
             completion(.success(.init(resp)))
         })
@@ -146,14 +150,13 @@ open class RtmStreamChannel: NSObject {
     ///   - option: The ``RtmJoinTopicOption`` to use for joining the channel.
     /// - Returns: A ``RtmCommonResponse`` object representing the result of the operation.
     /// - Throws: An error of type ``RtmBaseErrorInfo`` if the operation fails.
-    @available(iOS 13.0.0, *)
+    @discardableResult @available(iOS 13.0.0, *)
     public func joinTopic(
         _ topic: String, with option: RtmJoinTopicOption?
     ) async throws -> RtmCommonResponse {
         let (resp, err) = await channel.joinTopic(topic, with: option?.objcVersion)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw JoinTopicErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }
@@ -163,17 +166,17 @@ open class RtmStreamChannel: NSObject {
     /// - Parameters:
     ///   - topic: The name of the stream channel to leave.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful `RtmCommonResponse` or an error of type `RtmBaseErrorInfo`.
-    func leaveTopic(
+    ///                 The result will contain either a successful ``RtmCommonResponse``
+    ///                 or an error of type ``RtmBaseErrorInfo``.
+    public func leaveTopic(
         _ topic: String,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<AgoraRtmCommonResponse, JoinErrorInfo>) -> Void)? = nil
     ) {
         channel.leaveTopic(topic, completion: { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-//                return completion(.failure(JoinErrorInfo(from: errInfo) ?? .noKnownError))
+                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
+                    .noKnownError(operation: #function)))
             }
             completion(.success(.init(resp)))
         })
@@ -182,132 +185,182 @@ open class RtmStreamChannel: NSObject {
     /// Asynchronously leaves the stream channel.
     ///
     /// - Parameter topic: The name of the stream channel to leave.
-    /// - Returns: A `RtmCommonResponse` object representing the result of the operation.
-    /// - Throws: An error of type `RtmBaseErrorInfo` if the operation fails.
-    @available(iOS 13.0.0, *)
-    func leaveTopic(
+    /// - Returns: A ``RtmCommonResponse`` object representing the result of the operation.
+    /// - Throws: An error of type ``RtmBaseErrorInfo`` if the operation fails.
+    @discardableResult @available(iOS 13.0.0, *)
+    public func leaveTopic(
         _ topic: String
     ) async throws -> RtmCommonResponse {
         let (resp, err) = await channel.leaveTopic(topic)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw RtmSubscribeErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }
 
-    /// Options for a topic.
-    @objc public class RtmTopicOption: NSObject {
-        /// The list of users to subscribe.
-        @objc public var users: [String]?
-
-        /// Fetches the Objective-C version of the `AgoraRtmTopicOption`.
-        internal var objcVersion: AgoraRtmTopicOption {
-            let objcOpt = AgoraRtmTopicOption()
-            objcOpt.users = self.users
-            return objcOpt
-        }
-    }
-
-    /// Subscribes to a specific topic within the stream channel with the provided `AgoraRtmTopicOption`.
+    /// Subscribes to messages from specified users within a topic.
+    ///
+    /// This method lets you receive messages from a list of specific users in a given topic.
     ///
     /// - Parameters:
-    ///   - topic: The name of the topic to subscribe to within the stream channel.
-    ///   - option: The ``RtmTopicOption`` to use for subscribing to the topic.
-    ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful `RtmTopicSubscriptionResponse` or an error of type `RtmBaseErrorInfo`.
-    func subscribe(
-        toTopic topic: String, with option: RtmTopicOption?,
+    ///   - users: An array of user IDs whose messages you want to subscribe to.
+    ///   - topic: The topic in which the users are sending messages.
+    ///   - completion: An optional completion handler that returns either a successful response
+    ///                 (``RtmTopicSubscriptionResponse``) or an error (``RtmBaseErrorInfo``). Defaults to nil.
+    public func subscribe(
+        toUsers users: [String], inTopic topic: String,
         completion: ((Result<RtmTopicSubscriptionResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<AgoraRtmTopicSubscriptionResponse, SubscribeTopicErrorInfo>) -> Void)? = nil
     ) {
-        channel.subscribeTopic(topic, with: option?.objcVersion, completion: { resp, errInfo in
+        let subTopicOpt = AgoraRtmTopicOption()
+        subTopicOpt.users = users
+        channel.subscribeTopic(topic, with: subTopicOpt, completion: { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
                 return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-//                return completion(.failure(SubscribeTopicErrorInfo(from: errInfo) ?? .noKnownError))
             }
             completion(.success(.init(resp)))
         })
     }
 
-    @available(iOS 13.0.0, *)
-    func subscribe(
-        toTopic topic: String, with option: RtmTopicOption?
+    /// Asynchronously subscribes to messages from specified users within a topic.
+    ///
+    /// - Parameters:
+    ///   - users: An array of user IDs whose messages you want to subscribe to.
+    ///   - topic: The topic in which the users are sending messages.
+    ///
+    /// - Returns:
+    ///   A result that either provides a successful response ``RtmTopicSubscriptionResponse``
+    ///   or throws an error ``RtmBaseErrorInfo``.
+    @discardableResult @available(iOS 13.0.0, *)
+    public func subscribe(
+        toUsers users: [String], inTopic topic: String
     ) async throws -> RtmTopicSubscriptionResponse {
-        let (resp, err) = await channel.subscribeTopic(topic, with: option?.objcVersion)
+        let subTopicOpt = AgoraRtmTopicOption()
+        subTopicOpt.users = users
+        let (resp, err) = await channel.subscribeTopic(topic, with: subTopicOpt)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw SubscribeTopicErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }
 
-    func unsubscribe(
-        fromTopic topic: String, with option: RtmTopicOption?,
+    /// Unsubscribes from specified users' messages within a topic.
+    ///
+    /// This method allows you to stop receiving messages from a list of specified users within a given topic.
+    ///
+    /// - Parameters:
+    ///   - users: An array of user IDs from whom you want to unsubscribe.
+    ///   - topic: The topic in which the users are sending messages.
+    ///   - completion: An optional completion handler that returns either a successful response ``RtmCommonResponse``
+    ///                 or an error ``RtmBaseErrorInfo``.
+    public func unsubscribe(
+        fromUsers users: [String], inTopic topic: String,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<AgoraRtmCommonResponse, UnsubscribeTopicErrorInfo>) -> Void)? = nil
     ) {
-        channel.unsubscribeTopic(topic, with: option?.objcVersion, completion: { resp, errInfo in
+        let subTopicOpt = AgoraRtmTopicOption()
+        subTopicOpt.users = users
+        channel.unsubscribeTopic(topic, with: subTopicOpt, completion: { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
                 return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-//                return completion(.failure(UnsubscribeTopicErrorInfo(from: errInfo) ?? .noKnownError))
             }
             completion(.success(.init(resp)))
         })
     }
 
-    @available(iOS 13.0.0, *)
+    /// Asynchronously unsubscribes from messages from specified users within a topic.
+    ///
+    /// - Parameters:
+    ///   - users: An array of user IDs from whom you want to unsubscribe.
+    ///   - topic: The topic in which the users are sending messages.
+    ///
+    /// - Returns:
+    ///   A result that either provides a successful response ``RtmCommonResponse``
+    ///   or throws an error ``RtmBaseErrorInfo``.
+    @discardableResult @available(iOS 13.0.0, *)
     public func unsubscribe(
-        fromTopic topic: String, with option: RtmTopicOption?
+        fromUsers users: [String], inTopic topic: String
     ) async throws -> RtmCommonResponse {
-        let (resp, err) = await channel.unsubscribeTopic(topic, with: option?.objcVersion)
+        let subTopicOpt = AgoraRtmTopicOption()
+        subTopicOpt.users = users
+        let (resp, err) = await channel.unsubscribeTopic(topic, with: subTopicOpt)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw UnsubscribeTopicErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }
 
-
+    /// Publishes a message to a specified topic asynchronously.
+    ///
+    /// - Parameters:
+    ///   - message: The message to be published. Must be `Codable`.
+    ///   - topic: The name of the topic to which the message will be published.
+    ///   - options: Optional configurations for publishing the message. Defaults to `nil`.
+    ///   - completion: A completion block that returns a result containing an ``RtmCommonResponse`` or ``RtmBaseErrorInfo``.
     public func publishTopicMessage(
         _ message: Codable, in topic: String, with options: RtmPublishOptions?,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<AgoraRtmCommonResponse, PublishTopicMessageErrorInfo>) -> Void)? = nil
     ) {
-        guard let nsObjectMessage = message.convertToNSObject() else {
-            completion?(.failure(RtmBaseErrorInfo(errorCode: .channelInvalidMessage, operation: #function, reason: "message could not convert to NSObject")))
-//            completion?(.failure(PublishTopicMessageErrorInfo(errorCode: .publishMessageFailed, operation: "publish", reason: "message could not convert to NSObject")))
+        let msgString: String
+        do {
+            msgString = try message.convertToString()
+        } catch let error as RtmBaseErrorInfo {
+            completion?(.failure(error))
+            return
+        } catch {
+            completion?(.failure(RtmBaseErrorInfo(
+                errorCode: .channelInvalidMessage, operation: #function,
+                reason: "could not encode message: \(error.localizedDescription)"
+            )))
             return
         }
         channel.publishTopicMessage(
-            nsObjectMessage, inTopic: topic,
+            msgString as NSString, inTopic: topic,
             withOption: options?.objcVersion,
             completion: { resp, errInfo in
                 guard let completion = completion else { return }
                 guard let resp = resp else {
-                    return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-//                    return completion(.failure(PublishTopicMessageErrorInfo(from: errInfo) ?? .noKnownError))
+                    return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
+                        .noKnownError(operation: #function)))
                 }
                 completion(.success(.init(resp)))
             }
         )
     }
 
-    @available(iOS 13.0.0, *)
+    /// Publishes a message to a specified topic.
+    ///
+    /// This function allows you to publish a message to a topic.
+    ///
+    /// - Parameters:
+    ///   - message: The message to be published. Must be `Codable`.
+    ///   - topic: The name of the topic to which the message will be published.
+    ///   - options: Optional configurations for publishing the message. Defaults to `nil`.
+    ///
+    /// - Returns: An ``RtmCommonResponse`` containing information about the published message.
+    ///
+    /// - Throws: ``RtmBaseErrorInfo`` if an error occurs during the publishing process.
+    @discardableResult @available(iOS 13.0.0, *)
     public func publishTopicMessage(
         message: Codable,
         inTopic topic: String, with options: RtmPublishOptions?
     ) async throws -> RtmCommonResponse {
-        guard let nsObjectMessage = message.convertToNSObject() else {
-            throw RtmBaseErrorInfo(errorCode: .channelInvalidMessage, operation: #function, reason: "message could not convert to NSObject")
-//            throw PublishTopicMessageErrorInfo(errorCode: .publishMessageFailed, operation: "publish", reason: "message could not convert to NSObject")
+        let msgString: String
+        do {
+            msgString = try message.convertToString()
+        } catch let error as RtmBaseErrorInfo {
+            throw error
+        } catch {
+            throw RtmBaseErrorInfo(
+                errorCode: .channelInvalidMessage, operation: #function,
+                reason: "could not encode message: \(error.localizedDescription)"
+            )
         }
-        let (resp, err) = await channel.publishTopicMessage(nsObjectMessage, inTopic: topic, withOption: options?.objcVersion)
+        let (resp, err) = await channel.publishTopicMessage(
+            msgString as NSString, inTopic: topic, withOption: options?.objcVersion
+        )
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw PublishTopicMessageErrorInfo(from: err) ?? .noKnownError
         }
         return .init(resp)
     }
@@ -317,17 +370,16 @@ open class RtmStreamChannel: NSObject {
     /// - Parameters:
     ///   - topic: The name of the stream channel to retrieve the list of subscribed users from.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful array of user IDs or an error of type `RtmBaseErrorInfo`.
+    ///                 The result will contain either a successful array of user IDs or an error of type ``RtmBaseErrorInfo``.
     public func getSubscribedUserList(
-        for topic: String,
+        forTopic topic: String,
         completion: ((Result<[String], RtmBaseErrorInfo>) -> Void)? = nil
-//        completion: ((Result<[String], GetSubscribersErrorInfo>) -> Void)? = nil
     ) {
         channel.getSubscribedUserList(topic, completion: { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-//                return completion(.failure(GetSubscribersErrorInfo(from: errInfo) ?? .noKnownError))
+                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
+                    .noKnownError(operation: #function)))
             }
             completion(.success(resp.users))
         })
@@ -337,15 +389,14 @@ open class RtmStreamChannel: NSObject {
     ///
     /// - Parameter topic: The name of the stream channel to retrieve the list of subscribed users from.
     /// - Returns: An array of user IDs representing the list of subscribed users.
-    /// - Throws: An error of type `RtmBaseErrorInfo` if the operation fails.
+    /// - Throws: An error of type ``RtmBaseErrorInfo`` if the operation fails.
     @available(iOS 13.0.0, *)
     public func getSubscribedUserList(
-        for topic: String
+        forTopic topic: String
     ) async throws -> [String] {
         let (resp, err) = await channel.subscribedUserList(topic)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw GetSubscribersErrorInfo(from: err) ?? .noKnownError
         }
         return resp.users
     }
