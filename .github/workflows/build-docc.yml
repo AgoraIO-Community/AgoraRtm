@@ -31,7 +31,7 @@ jobs:
         run: sudo xcode-select --switch /Applications/Xcode_14.3.app
       - name: Build DocC
         run: |
-          xcodebuild docbuild -scheme AgoraRtm -derivedDataPath /tmp/docbuild -destination 'generic/platform=iOS';
+          xcodebuild docbuild -scheme AgoraRtmKit-Swift -derivedDataPath /tmp/docbuild -destination 'generic/platform=iOS';
           $(xcrun --find docc) process-archive \
             transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/AgoraRtm.doccarchive \
             --hosting-base-path AgoraRtm \
