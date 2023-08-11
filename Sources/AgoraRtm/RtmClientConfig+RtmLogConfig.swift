@@ -35,7 +35,7 @@ extension RtmClientConfig {
         ///   - level: The log level to control the verbosity of log output.
         ///   - filePath: The file path to store the log file. If nil, logs are not written to a file.
         ///   - fileSizeInKB: The maximum size of the log file in kilobytes before rotation.
-        public init(level: RtmLogLevel, filePath: String?, fileSizeInKB: Int32) {
+        public init(level: RtmLogLevel, filePath: String? = nil, fileSizeInKB: Int32) {
             config = AgoraRtmLogConfig()
             config.filePath = filePath
             config.fileSizeInKB = fileSizeInKB

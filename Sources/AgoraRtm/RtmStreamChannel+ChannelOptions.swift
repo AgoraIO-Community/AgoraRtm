@@ -67,7 +67,7 @@ public class RtmJoinChannelOption {
     /// - Parameters:
     ///   - token: Token used to join the channel.
     ///   - features: Option set for features to use when joining the channel.
-    public init(token: String?, features: RtmJoinChannelFeatures = []) {
+    public init(token: String?, features: RtmJoinChannelFeatures = [.presence]) {
         self.token = token
         self.features = features
     }

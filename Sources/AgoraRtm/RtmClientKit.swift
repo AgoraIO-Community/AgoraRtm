@@ -21,6 +21,9 @@ internal extension Encodable {
     }
 
     func convertToString() throws -> String {
+        // First check if Codable is a String
+        if let str = self as? String { return str }
+
         let msg = try JSONEncoder().encode(self)
 
         guard let jsonString = String(data: msg, encoding: .utf8) else {
@@ -61,7 +64,7 @@ open class RtmClientKit: NSObject {
     /// - Parameters:
     ///   - config: Configuration for the Agora RTM client.
     ///   - delegate: The delegate for the Agora RTM client.
-    public init?(config: RtmClientConfig, delegate: RtmClientDelegate) {
+    public init?(config: RtmClientConfig, delegate: RtmClientDelegate?) {
         super.init()
         guard let rtmClient = AgoraRtmClientKit(
             config: config.config, delegate: self
@@ -180,63 +183,6 @@ open class RtmClientKit: NSObject {
         return .init(resp)
     }
 
-    /// A set of options for subscribing to specific features in the Agora Real-Time Messaging (RTM) system.
-    /// You can use these options to customize your subscription behavior.
-    ///
-    /// Create an instance of ``RtmSubscribeFeatures`` by combining the individual options using the `OptionSet` syntax.
-    /// For example:
-    ///
-    /// ```swift
-    /// let subscriptionOptions: RtmSubscribeFeatures = [
-    ///     .messages, .metadata
-    /// ]
-    ///
-    /// clientKit.subscribe(
-    ///     toChannel: "example", features: subscriptionOptions
-    /// )
-    /// ```
-    ///
-    /// - See Also: ``RtmClientKit/subscribe(toChannel:features:completion)``
-    public struct RtmSubscribeFeatures: OptionSet {
-        public let rawValue: UInt
-
-        /// Subscribe to channels with messages.
-        ///
-        /// This option allows you to receive messages sent to the subscribed channels.
-        public static let messages = RtmSubscribeFeatures(rawValue: 1 << 0)
-
-        /// Subscribe to channels with metadata.
-        ///
-        /// This option allows you to receive metadata updates for the subscribed channels.
-        public static let metadata = RtmSubscribeFeatures(rawValue: 1 << 1)
-
-        /// Subscribe to channels with user presence updates.
-        ///
-        /// This option allows you to receive presence updates for the users in the subscribed channels.
-        public static let presence = RtmSubscribeFeatures(rawValue: 1 << 2)
-
-        /// Subscribe to channels with lock updates.
-        ///
-        /// This option allows you to receive updates about channel locks in the subscribed channels.
-        public static let lock = RtmSubscribeFeatures(rawValue: 1 << 3)
-
-        public init(rawValue: UInt) {
-            self.rawValue = rawValue
-        }
-
-        /// Converts the `RtmSubscribeFeatures` to the corresponding `AgoraRtmSubscribeOptions` object.
-        ///
-        /// - Returns: The `AgoraRtmSubscribeOptions` object with the subscription options set based on the ``RtmClientKit/RtmSubscribeFeatures``.
-        internal var objcVersion: AgoraRtmSubscribeOptions {
-            let objcOpt = AgoraRtmSubscribeOptions()
-            objcOpt.withMessage = self.contains(.messages)
-            objcOpt.withMetadata = self.contains(.metadata)
-            objcOpt.withPresence = self.contains(.presence)
-            objcOpt.withLock = self.contains(.lock)
-            return objcOpt
-        }
-    }
-
     /// Subscribes to a channel with the provided name and options.
     ///
     /// - Parameters:
@@ -247,7 +193,7 @@ open class RtmClientKit: NSObject {
     ///   which indicates the response of the subscription operation.
     public func subscribe(
         toChannel channelName: String,
-        features: RtmSubscribeFeatures = [],
+        features: RtmSubscribeFeatures = [.messages, .presence],
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
 //        completion: ((Result<AgoraRtmCommonResponse, RtmSubscribeErrorInfo>) -> Void)? = nil
     ) {
@@ -271,7 +217,7 @@ open class RtmClientKit: NSObject {
     /// This method can throw a ``RtmCommonResponse`` error if the subscription operation fails.
     @available(iOS 13.0.0, *) @discardableResult
     public func subscribe(
-        toChannel channelName: String, features: RtmSubscribeFeatures = []
+        toChannel channelName: String, features: RtmSubscribeFeatures = [.messages, .presence]
     ) async throws -> RtmCommonResponse {
         let (resp, err) = await agoraRtmClient.subscribe(withChannel: channelName, option: features.objcVersion)
         guard let resp = resp else {
@@ -367,7 +313,7 @@ open class RtmClientKit: NSObject {
     ///   - publishOption: The options for publishing the message.
     ///
     /// This method will throw an ``RtmBaseErrorInfo`` if the encoding or publish operation fails.
-    @available(iOS 13.0.0, *) @discardableResult
+    @discardableResult @available(iOS 13.0.0, *)
     public func publish(
         message: Codable, to channelName: String, withOption publishOption: RtmPublishOptions? = nil
     ) async throws -> RtmCommonResponse {
@@ -418,6 +364,63 @@ open class RtmClientKit: NSObject {
     /// - Returns: The error code indicating the result of the destruction, or nil if successful.
     public func destroy() -> RtmBaseErrorCode? {
         RtmBaseErrorCode(rawValue: agoraRtmClient.destroy().rawValue)
+    }
+}
+
+/// A set of options for subscribing to specific features in the Agora Real-Time Messaging (RTM) system.
+/// You can use these options to customize your subscription behavior.
+///
+/// Create an instance of ``RtmSubscribeFeatures`` by combining the individual options using the `OptionSet` syntax.
+/// For example:
+///
+/// ```swift
+/// let subscriptionOptions: RtmSubscribeFeatures = [
+///     .messages, .metadata
+/// ]
+///
+/// clientKit.subscribe(
+///     toChannel: "example", features: subscriptionOptions
+/// )
+/// ```
+///
+/// - See Also: ``RtmClientKit/subscribe(toChannel:features:completion)``
+public struct RtmSubscribeFeatures: OptionSet {
+    public let rawValue: UInt
+
+    /// Subscribe to channels with messages.
+    ///
+    /// This option allows you to receive messages sent to the subscribed channels.
+    public static let messages = RtmSubscribeFeatures(rawValue: 1 << 0)
+
+    /// Subscribe to channels with metadata.
+    ///
+    /// This option allows you to receive metadata updates for the subscribed channels.
+    public static let metadata = RtmSubscribeFeatures(rawValue: 1 << 1)
+
+    /// Subscribe to channels with user presence updates.
+    ///
+    /// This option allows you to receive presence updates for the users in the subscribed channels.
+    public static let presence = RtmSubscribeFeatures(rawValue: 1 << 2)
+
+    /// Subscribe to channels with lock updates.
+    ///
+    /// This option allows you to receive updates about channel locks in the subscribed channels.
+    public static let lock = RtmSubscribeFeatures(rawValue: 1 << 3)
+
+    public init(rawValue: UInt) {
+        self.rawValue = rawValue
+    }
+
+    /// Converts the `RtmSubscribeFeatures` to the corresponding `AgoraRtmSubscribeOptions` object.
+    ///
+    /// - Returns: The `AgoraRtmSubscribeOptions` object with the subscription options set based on the ``RtmSubscribeFeatures``.
+    internal var objcVersion: AgoraRtmSubscribeOptions {
+        let objcOpt = AgoraRtmSubscribeOptions()
+        objcOpt.withMessage = self.contains(.messages)
+        objcOpt.withMetadata = self.contains(.metadata)
+        objcOpt.withPresence = self.contains(.presence)
+        objcOpt.withLock = self.contains(.lock)
+        return objcOpt
     }
 }
 
