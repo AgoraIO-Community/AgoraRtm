@@ -7,21 +7,26 @@ let package = Package(
     name: "AgoraRtm",
     products: [
         .library(
-            name: "AgoraRtm",
+            name: "AgoraRtmKit-Swift",
             targets: ["AgoraRtm"]),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/AgoraIO/AgoraRTM_iOS.git", exact: .init(stringLiteral: "2.1.4-nightly.23.08.10"))
+        .library(
+            name: "AgoraRtmKit-OC",
+            targets: ["AgoraRtmKit-OC"]
+        ),
     ],
     targets: [
         .target(
             name: "AgoraRtm",
-            dependencies: [
-                .product(name: "AgoraRtmKit", package: "AgoraRTM_iOS")
-            ]
+            dependencies: ["AgoraRtmKit-OC"]
+        ),
+        .binaryTarget(
+            name: "AgoraRtmKit-OC",
+            url: "https://github.com/AgoraIO/AgoraRtm_iOS/releases/download/2.1.4-nightly.23.08.10/AgoraRtmKit.xcframework.zip",
+            checksum: "5b227fba49bf7e8f5183f222d5ac5b15851c44576f4dfed1074d6b54c9bf83c4"
         ),
         .testTarget(
             name: "AgoraRtmTests",
-            dependencies: ["AgoraRtm"]),
+            dependencies: ["AgoraRtm"]
+        )
     ]
 )
