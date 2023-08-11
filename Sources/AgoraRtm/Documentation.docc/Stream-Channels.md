@@ -1,6 +1,6 @@
 # Stream Channels
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Join, interact, and manage event notifications within room-based channels in RTM.
 
 ## Overview
 
