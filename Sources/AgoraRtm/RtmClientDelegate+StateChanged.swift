@@ -108,3 +108,49 @@ public enum RtmClientConnectionChangeReason: Int {
     case presenceNotReady = 10003
 }
 
+public extension RtmClientConnectionState {
+    var description: String {
+        switch self {
+        case .disconnected: return "disconnected"
+        case .connecting: return "connecting"
+        case .connected: return "connected"
+        case .reconnecting: return "reconnecting"
+        case .failed: return "failed"
+        case .unknown: return "unknown"
+        }
+    }
+}
+
+public extension RtmClientConnectionChangeReason {
+    var description: String {
+        switch self {
+        case .unknown: return "unknown"
+        case .connecting: return "connecting"
+        case .joinSuccess: return "joinSuccess"
+        case .interrupted: return "interrupted"
+        case .bannedByServer: return "bannedByServer"
+        case .joinFailed: return "joinFailed"
+        case .leaveChannel: return "leaveChannel"
+        case .invalidAppId: return "invalidAppId"
+        case .invalidChannelName: return "invalidChannelName"
+        case .invalidToken: return "invalidToken"
+        case .tokenExpired: return "tokenExpired"
+        case .rejectedByServer: return "rejectedByServer"
+        case .settingProxyServer: return "settingProxyServer"
+        case .renewToken: return "renewToken"
+        case .clientIpAddressChanged: return "clientIpAddressChanged"
+        case .keepAliveTimeout: return "keepAliveTimeout"
+        case .rejoinSuccess: return "rejoinSuccess"
+        case .changedLost: return "changedLost"
+        case .echoTest: return "echoTest"
+        case .clientIpAddressChangedByUser: return "clientIpAddressChangedByUser"
+        case .sameUidLogin: return "sameUidLogin"
+        case .tooManyBroadcasters: return "tooManyBroadcasters"
+        case .licenseValidationFailure: return "licenseValidationFailure"
+        case .streamChannelNotAvailable: return "streamChannelNotAvailable"
+        case .loginSuccess: return "loginSuccess"
+        case .logout: return "logout"
+        case .presenceNotReady: return "presenceNotReady"
+        }
+    }
+}
