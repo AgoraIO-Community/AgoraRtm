@@ -6,7 +6,7 @@ AgoraRtm is a class that provides real-time messaging functionalities for applic
 
 ## Topics
 
-### Setup
+### Get Started Guides
 
 - <doc:Initialising>
 - <doc:Events>
@@ -26,6 +26,12 @@ AgoraRtm is a class that provides real-time messaging functionalities for applic
 - ``RtmBaseErrorInfo``
 - ``RtmBaseErrorCode``
 
+### Messages
+
+- ``RtmPublishOptions``
+- ``RtmMessageEvent``
+- ``RtmMessage``
+
 ### Method Responses
 
 - ``RtmCommonResponse``
@@ -33,3 +39,5 @@ AgoraRtm is a class that provides real-time messaging functionalities for applic
 - ``RtmGetMetadataResponse``
 - ``RtmTopicSubscriptionResponse``
 - ``RtmWhoNowResponse``
+- ``RtmWhereNowResponse``
+- ``RtmPresenceGetStateResponse``

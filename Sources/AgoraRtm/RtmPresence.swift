@@ -33,7 +33,7 @@ public struct RtmPresenceOptions {
     /// The paging object used for pagination.
     public var page: String
 
-    public init(include: IncludeOptions = [], page: String) {
+    public init(include: IncludeOptions = .userId, page: String = "") {
         self.include = include
         self.page = page
     }
@@ -112,21 +112,25 @@ public class RtmPresence {
         }
     }
 
-    /// Sets the user's state.
+    /// Sets the local user's state within a specified channel.
     ///
     /// - Parameters:
-    ///   - channel: The type and name of the channel.
-    ///   - items: The state items of the user.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmBaseErrorInfo>`.
+    ///   - channel: The details of the channel in which the state needs to be set.
+    ///   - state: A dictionary containing the states to be set for the local user within the channel.
+    ///   - completion: An optional completion handler that returns the result of the state setting operation.
+    ///
+    /// The method allows the local user to configure their state before subscribing or joining a channel.
+    /// Before the user joins or subscribes, the data is merely cached client-side. Once the user joins or
+    /// subscribes to the channel, this data becomes active immediately, triggering the appropriate event notifications.
     public func setState(
-        ofChannel channel: RtmChannelDetails,
-        items: [String: String],
+        inChannel channel: RtmChannelDetails,
+        to state: [String: String],
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.setState(
             channelName, channelType: channelType,
-            items: items.map {
+            items: state.map {
                 let stateItem = AgoraRtmStateItem()
                 stateItem.key = $0.key
                 stateItem.value = $0.value
@@ -142,15 +146,17 @@ public class RtmPresence {
             })
     }
 
-    /// Deletes the user's state.
+    /// Removes specified state entries of the local user from a given channel.
     ///
     /// - Parameters:
-    ///   - channel: The type and name of the channel.
-    ///   - keys: The keys of the state items to be removed.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmBaseErrorInfo>`.
+    ///   - channel: The details of the channel from which state entries need to be removed.
+    ///   - keys: An array of keys representing the state entries to be removed.
+    ///   - completion: An optional callback that returns the result of the state removal operation.
+    ///
+    /// Use this method to remove specific state entries of the local user from a channel.
     public func removeState(
         fromChannel channel: RtmChannelDetails,
-        keys: [String],
+        withKeys keys: [String],
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
