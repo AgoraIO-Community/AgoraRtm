@@ -203,17 +203,16 @@ open class RtmStreamChannel: NSObject {
     /// This method lets you receive messages from a list of specific users in a given topic.
     ///
     /// - Parameters:
-    ///   - users: An array of user IDs whose messages you want to subscribe to.
-    ///   - topic: The topic in which the users are sending messages.
+    ///   - topic: The topic name to be subscribed to.
+    ///   - options: Subscription options using ``RtmTopicOption``, including users to subscribe to.
+    ///              Use `nil` to subscribe to all.
     ///   - completion: An optional completion handler that returns either a successful response
     ///                 (``RtmTopicSubscriptionResponse``) or an error (``RtmBaseErrorInfo``). Defaults to nil.
     public func subscribe(
-        toUsers users: [String], inTopic topic: String,
+        toTopic topic: String, withOptions options: RtmTopicOption? = nil,
         completion: ((Result<RtmTopicSubscriptionResponse, RtmBaseErrorInfo>) -> Void)? = nil
     ) {
-        let subTopicOpt = AgoraRtmTopicOption()
-        subTopicOpt.users = users
-        channel.subscribeTopic(topic, with: subTopicOpt, completion: { resp, errInfo in
+        channel.subscribeTopic(topic, with: options?.objcVersion, completion: { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
                 return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
@@ -225,19 +224,18 @@ open class RtmStreamChannel: NSObject {
     /// Asynchronously subscribes to messages from specified users within a topic.
     ///
     /// - Parameters:
-    ///   - users: An array of user IDs whose messages you want to subscribe to.
-    ///   - topic: The topic in which the users are sending messages.
+    ///   - topic: The topic name to be subscribed to.
+    ///   - options: Subscription options using ``RtmTopicOption``, including users to subscribe to.
+    ///              Use `nil` to subscribe to all.
     ///
     /// - Returns:
     ///   A result that either provides a successful response ``RtmTopicSubscriptionResponse``
     ///   or throws an error ``RtmBaseErrorInfo``.
     @discardableResult @available(iOS 13.0.0, *)
     public func subscribe(
-        toUsers users: [String], inTopic topic: String
+        toTopic topic: String, withOptions options: RtmTopicOption? = nil
     ) async throws -> RtmTopicSubscriptionResponse {
-        let subTopicOpt = AgoraRtmTopicOption()
-        subTopicOpt.users = users
-        let (resp, err) = await channel.subscribeTopic(topic, with: subTopicOpt)
+        let (resp, err) = await channel.subscribeTopic(topic, with: options?.objcVersion)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
         }
@@ -249,17 +247,16 @@ open class RtmStreamChannel: NSObject {
     /// This method allows you to stop receiving messages from a list of specified users within a given topic.
     ///
     /// - Parameters:
-    ///   - users: An array of user IDs from whom you want to unsubscribe.
-    ///   - topic: The topic in which the users are sending messages.
+    ///   - topic: The topic name to be unsubscribed from.
+    ///   - options: Subscription options using ``RtmTopicOption``, including users to unsubscribe to.
+    ///              Use `nil` to unsubscribe to all.
     ///   - completion: An optional completion handler that returns either a successful response ``RtmCommonResponse``
     ///                 or an error ``RtmBaseErrorInfo``.
     public func unsubscribe(
-        fromUsers users: [String], inTopic topic: String,
+        fromTopic topic: String, withOptions options: RtmTopicOption? = nil,
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
     ) {
-        let subTopicOpt = AgoraRtmTopicOption()
-        subTopicOpt.users = users
-        channel.unsubscribeTopic(topic, with: subTopicOpt, completion: { resp, errInfo in
+        channel.unsubscribeTopic(topic, with: options?.objcVersion, completion: { resp, errInfo in
             guard let completion = completion else { return }
             guard let resp = resp else {
                 return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
@@ -271,19 +268,18 @@ open class RtmStreamChannel: NSObject {
     /// Asynchronously unsubscribes from messages from specified users within a topic.
     ///
     /// - Parameters:
-    ///   - users: An array of user IDs from whom you want to unsubscribe.
-    ///   - topic: The topic in which the users are sending messages.
+    ///   - topic: The topic name to be unsubscribed from.
+    ///   - options: Subscription options using ``RtmTopicOption``, including users to unsubscribe to.
+    ///              Use `nil` to unsubscribe to all.
     ///
     /// - Returns:
     ///   A result that either provides a successful response ``RtmCommonResponse``
     ///   or throws an error ``RtmBaseErrorInfo``.
     @discardableResult @available(iOS 13.0.0, *)
     public func unsubscribe(
-        fromUsers users: [String], inTopic topic: String
+        fromTopic topic: String, withOptions options: RtmTopicOption? = nil
     ) async throws -> RtmCommonResponse {
-        let subTopicOpt = AgoraRtmTopicOption()
-        subTopicOpt.users = users
-        let (resp, err) = await channel.unsubscribeTopic(topic, with: subTopicOpt)
+        let (resp, err) = await channel.unsubscribeTopic(topic, with: options?.objcVersion)
         guard let resp = resp else {
             throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
         }
@@ -408,5 +404,25 @@ open class RtmStreamChannel: NSObject {
         let destroyCode = channel.destroy()
         if destroyCode == .ok { return nil }
         return .init(rawValue: destroyCode.rawValue)
+    }
+}
+
+/// Options for subscribing and unsubscribing to a topic
+@objc public class RtmTopicOption: NSObject {
+    /// The list of users to subscribe to or unsubscribe from.
+    /// Use `nil` to apply to all users in a topic
+    @objc public var users: [String]?
+    /// Fetches the Objective-C version of the `AgoraRtmTopicOption`.
+    internal var objcVersion: AgoraRtmTopicOption {
+        let objcOpt = AgoraRtmTopicOption()
+        objcOpt.users = self.users
+        return objcOpt
+    }
+
+    /// Creates an instance of ``RtmTopicOption`` with the provided parameters.
+    /// - Parameter users: The list of users to subscribe to or unsubscribe from.
+    ///                    Use `nil` to apply to all users in a topic
+    @objc public init(users: [String]? = nil) {
+        self.users = users
     }
 }

@@ -145,7 +145,7 @@ public class RtmGetLocksResponse {
     }
 }
 
-public class RtmWhoNowResponse {
+public class RtmOnlineUsersResponse {
     private let response: AgoraRtmWhoNowResponse
 
     public var totalOccupancy: Int32 {
@@ -171,7 +171,11 @@ public class RtmWhoNowResponse {
     }
 }
 
-public class RtmWhereNowResponse {
+@available(*, deprecated, renamed: "RtmOnlineUsersResponse")
+public typealias RtmWhoNowResponse = RtmOnlineUsersResponse
+
+
+public class RtmUserChannelsResponse {
     private let response: AgoraRtmWhereNowResponse
 
     public var totalChannel: Int32 {
@@ -182,10 +186,13 @@ public class RtmWhereNowResponse {
         return response.channels.map { .init($0) }
     }()
 
-    init(_ response: AgoraRtmWhereNowResponse) {
+    internal init(_ response: AgoraRtmWhereNowResponse) {
         self.response = response
     }
 }
+
+@available(*, deprecated, renamed: "RtmUserChannelsResponse")
+public typealias RtmWhereNowResponse = RtmUserChannelsResponse
 
 public class RtmPresenceGetStateResponse {
     private let response: AgoraRtmPresenceGetStateResponse

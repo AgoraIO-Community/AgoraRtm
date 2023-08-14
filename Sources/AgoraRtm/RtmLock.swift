@@ -42,7 +42,8 @@ public class RtmLock {
 
     /// Initializes a new instance of `RtmLock`.
     /// - Parameter lock: The underlying AgoraRtmLock instance.
-    init(lock: AgoraRtmLock) {
+    internal init?(lock: AgoraRtmLock?) {
+        guard let lock else { return nil }
         self.lock = lock
     }
 

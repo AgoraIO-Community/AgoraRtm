@@ -53,36 +53,46 @@ do {
 
 ## Subscribing to a Topic
 
-Joining a topic doesn't guarantee message receipt, you need to subscribe and pick message senders.
+You cna join a topic with no specified users, meaning it will subscribe to as many as it can, or you can specify users users with the following limitations:
 - You can subscribe to 50 topics max per channel and pick up to 64 message senders per topic to maintain performance.
 - List users you want messages from when subscribing. For instance, choosing `["UserA", "UserB"]` then `["UserB", "UserC"]` means you'll get messages from `["UserA", "UserB", "UserC"]`.
 - If you don't list users, the system randomly selects up to 64 for you. If the topic has 64 or fewer users, you'll get all; if more, a random 64.
 
 ```swift
 do {
-    _ = try await streamChannel.subscribe(toTopic: "Basketball", users: ["user-1", "user-2"])
+    _ = try await streamChannel.subscribe(
+        toTopic: "Basketball",
+        withOptions: RtmTopicOption(users: ["user-1", "user-2"])
+    )
 } catch let err as RtmBaseErrorInfo {
     print("subscription failed, errorCode \(err.errorCode), reason \(err.reason)")
 }
 ```
 
-- ``RtmStreamChannel/subscribe(toUsers:inTopic:)``
-- ``RtmStreamChannel/subscribe(toUsers:inTopic:completion:)``
+- ``RtmStreamChannel/subscribe(toTopic:withOptions:)``
+- ``RtmStreamChannel/subscribe(toTopic:withOptions:completion:)``
+- ``RtmTopicOption/init(users:)``
 
 ## Unsubscribing from a Topic
 
 If you're no longer interested in receiving messages from a topic or specific publishers within it, you can unsubscribe.
 
-1. Create an array of user IDs you want to stop receiving messages from.
-2. Specify the topic from which you'd like to unsubscribe.
-3. Use the ``RtmStreamChannel/unsubscribe(fromUsers:inTopic:)`` method.
+1. Specify the topic from which you'd like to unsubscribe.
+2. Create an array of user IDs you want to stop receiving messages from, or pass `nil` to unsubscribe from all.
+3. Use the ``RtmStreamChannel/unsubscribe(fromTopic:withOptions:)`` method.
 
 ```swift
 do {
-    _ = try await streamChannel.unsubscribe(toTopic: "Basketball", users: ["user-1", "user-2"])
+    _ = try await streamChannel.unsubscribe(
+        fromTopic: "Basketball",
+        withOptions: RtmTopicOption(users: ["user-1", "user-2"])
+    )
 } catch let err as RtmBaseErrorInfo {
     print("unsubscribe failed, errorCode \(err.errorCode), reason \(err.reason)")
 }
 ```
+
+- ``RtmStreamChannel/unsubscribe(fromTopic:withOptions:)``
+- ``RtmStreamChannel/unsubscribe(fromTopic:withOptions:completion:)``
 
 To unsubscribe from all users, you can use ``RtmStreamChannel/getSubscribedUserList(forTopic:)`` to get the full list of subscribed users.

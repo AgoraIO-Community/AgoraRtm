@@ -9,31 +9,14 @@ import AgoraRtmKit
 
 /// Options for querying presence information in the Agora RTM system.
 public struct RtmPresenceOptions {
-    /// Options to include in the presence query result.
-    public struct IncludeOptions: OptionSet {
-        public let rawValue: Int
-
-        public init(rawValue: Int) {
-            self.rawValue = rawValue
-        }
-
-        /// Include user ID in the query result.
-        public static let userId = IncludeOptions(rawValue: 1 << 0)
-
-        /// Include user state in the query result.
-        public static let userState = IncludeOptions(rawValue: 1 << 1)
-
-        /// Include both user ID and user state in the query result.
-        public static let all: IncludeOptions = [.userId, .userState]
-    }
 
     /// The options to include in the query result.
-    public var include: IncludeOptions
+    public var include: RtmPresenceOptionFeatures
 
     /// The paging object used for pagination.
     public var page: String
 
-    public init(include: IncludeOptions = .userId, page: String = "") {
+    public init(include: RtmPresenceOptionFeatures = .userId, page: String = "") {
         self.include = include
         self.page = page
     }
@@ -46,6 +29,25 @@ public struct RtmPresenceOptions {
         return objcOpt
     }
 }
+
+/// Options to include in the presence query result.
+public struct RtmPresenceOptionFeatures: OptionSet {
+    public let rawValue: Int
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    /// Include user ID in the query result.
+    public static let userId = RtmPresenceOptionFeatures(rawValue: 1 << 0)
+
+    /// Include user state in the query result.
+    public static let userState = RtmPresenceOptionFeatures(rawValue: 1 << 1)
+
+    /// Include both user ID and user state in the query result.
+    public static let all: RtmPresenceOptionFeatures = [.userId, .userState]
+}
+
 
 /// Represents options for querying presence information.
 public struct RtmPresenceQueryOptions {
@@ -64,7 +66,7 @@ public class RtmPresence {
 
     internal let presence: AgoraRtmPresence
 
-    internal init?(_ presence: AgoraRtmPresence?) {
+    internal init?(presence: AgoraRtmPresence?) {
         guard let presence else { return nil }
         self.presence = presence
     }
@@ -75,10 +77,10 @@ public class RtmPresence {
     ///   - channel: The type and name of the channel.
     ///   - options: The query option. Default is nil.
     ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhoNowResponse, RtmBaseErrorInfo>`.
-    public func whoNow(
+    public func fetchOnlineUsers(
         inChannel channel: RtmChannelDetails,
         options: RtmPresenceOptions? = nil,
-        completion: @escaping (Result<RtmWhoNowResponse, RtmBaseErrorInfo>) -> Void
+        completion: @escaping (Result<RtmOnlineUsersResponse, RtmBaseErrorInfo>) -> Void
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.whoNow(
@@ -93,15 +95,21 @@ public class RtmPresence {
         }
     }
 
+    @available(*, deprecated, renamed: "fetchOnlineUsers(in:options:completion:)")
+    public func whoNow(
+        inChannel channel: RtmChannelDetails,
+        options: RtmPresenceOptions? = nil,
+        completion: @escaping (Result<RtmOnlineUsersResponse, RtmBaseErrorInfo>) -> Void
+    ) { self.fetchOnlineUsers(inChannel: channel, options: options, completion: completion) }
 
     /// Queries which channels the specified user has joined.
     ///
     /// - Parameters:
     ///   - userId: The ID of the user.
     ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhereNowResponse, RtmBaseErrorInfo>`.
-    public func whereNow(
+    public func fetchUserChannels(
         userId: String,
-        completion: @escaping (Result<RtmWhereNowResponse, RtmBaseErrorInfo>) -> Void
+        completion: @escaping (Result<RtmUserChannelsResponse, RtmBaseErrorInfo>) -> Void
     ) {
         presence.whereNow(userId) { response, error in
             if let response = response {
@@ -111,6 +119,12 @@ public class RtmPresence {
             completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
         }
     }
+
+    @available(*, deprecated, renamed: "fetchUserChannels(userId:completion:)")
+    public func whereNow(
+        userId: String,
+        completion: @escaping (Result<RtmUserChannelsResponse, RtmBaseErrorInfo>) -> Void
+    ) { self.fetchUserChannels(userId: userId, completion: completion) }
 
     /// Sets the local user's state within a specified channel.
     ///
@@ -122,7 +136,7 @@ public class RtmPresence {
     /// The method allows the local user to configure their state before subscribing or joining a channel.
     /// Before the user joins or subscribes, the data is merely cached client-side. Once the user joins or
     /// subscribes to the channel, this data becomes active immediately, triggering the appropriate event notifications.
-    public func setState(
+    public func setUserState(
         inChannel channel: RtmChannelDetails,
         to state: [String: String],
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
@@ -154,9 +168,9 @@ public class RtmPresence {
     ///   - completion: An optional callback that returns the result of the state removal operation.
     ///
     /// Use this method to remove specific state entries of the local user from a channel.
-    public func removeState(
+    public func removeUserState(
         fromChannel channel: RtmChannelDetails,
-        withKeys keys: [String],
+        keys: [String],
         completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion

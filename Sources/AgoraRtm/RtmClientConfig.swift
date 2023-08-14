@@ -8,7 +8,7 @@
 import AgoraRtmKit
 
 /// A configuration struct for initializing the Agora Real-Time Messaging (RTM) client.
-public struct RtmClientConfig {
+@objc public class RtmClientConfig: NSObject {
     internal let config: AgoraRtmClientConfig
 
     /// Creates an instance of `RtmClientConfig` with the provided parameters.
@@ -17,7 +17,7 @@ public struct RtmClientConfig {
     ///   - appId: The unique identifier of the application.
     ///   - userId: The user ID for the RTM client.
     ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer. Default is `true`.
-    public init(appId: String, userId: String, useStringUserId: Bool = true) {
+    @objc public init(appId: String, userId: String, useStringUserId: Bool = true) {
         config = AgoraRtmClientConfig()
         config.appId = appId
         config.useStringUserId = useStringUserId
@@ -38,35 +38,38 @@ public struct RtmClientConfig {
     }
 
     /// The area code for the RTM client.
-    public var areaCode: RtmAreaCode {
+    @objc public var areaCode: RtmAreaCode {
         get { .init(rawValue: UInt(config.areaCode)) }
         set { config.areaCode = UInt32(newValue.legacyAreaCode!.rawValue) }
     }
 
     /// The timeout for user presence status updates.
-    public var presenceTimeout: UInt32 {
+    @objc public var presenceTimeout: UInt32 {
         get { config.presenceTimeout }
         set { config.presenceTimeout = newValue }
     }
 
     /// A flag indicating whether the user ID should be treated as a string or an integer.
-    public var useStringUserId: Bool {
+    @objc public var useStringUserId: Bool {
         get { config.useStringUserId }
         set { config.useStringUserId = newValue }
     }
 
+    // Strong references to retain the Objective-C objects
+    private var _encryptionConfig: AgoraRtmEncryptionConfig?
+
     /// The configuration for logging options.
-    public var logConfig: RtmLogConfig? {
+    @objc public var logConfig: RtmLogConfig? {
         didSet { config.logConfig = logConfig?.config }
     }
 
     /// The configuration for proxy options.
-    public var proxyConfig: RtmProxyConfig? {
+    @objc public var proxyConfig: RtmProxyConfig? {
         didSet { config.proxyConfig = proxyConfig?.config }
     }
 
     /// The encryption configuration for the RTM client.
-    public enum RtmEncryptionConfig {
+    public enum RtmEncryptionConfig: Equatable {
         /// No encryption.
         case none
         /// AES-128-GCM encryption.
@@ -78,19 +81,24 @@ public struct RtmClientConfig {
     /// The encryption configuration for the RTM client.
     public var encryptionConfig: RtmEncryptionConfig? {
         set {
-            var encConfig: AgoraRtmEncryptionConfig? = .init()
+            guard let newValue = newValue else {
+                config.encryptionConfig = nil
+                self._encryptionConfig = nil
+                return
+            }
+            let encConfig = AgoraRtmEncryptionConfig()
             switch newValue {
             case .aes128GCM(let key, let salt):
-                encConfig?.encryptionKey = key
-                encConfig?.encryptionSalt = salt?.data(using: .utf8)
-                encConfig?.encryptionMode = .AES128GCM
+                encConfig.encryptionKey = key
+                encConfig.encryptionSalt = salt?.data(using: .utf8)
+                encConfig.encryptionMode = .AES128GCM
             case .aes256GCM(let key, let salt):
-                encConfig?.encryptionKey = key
-                encConfig?.encryptionSalt = salt?.data(using: .utf8)
-                encConfig?.encryptionMode = .AES256GCM
-            default:
-                encConfig = nil
+                encConfig.encryptionKey = key
+                encConfig.encryptionSalt = salt?.data(using: .utf8)
+                encConfig.encryptionMode = .AES256GCM
+            default: break
             }
+            self._encryptionConfig = encConfig
             config.encryptionConfig = encConfig
         }
         get {
