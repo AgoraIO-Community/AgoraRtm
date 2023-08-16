@@ -39,13 +39,16 @@ public struct RtmPresenceIntervalInfo {
     public let userStateList: [String: [String: String]]
 
     /// Initializes an instance of `RtmPresenceIntervalInfo`.
-    /// - Parameter agoraIntervalInfo: The AgoraRtmPresenceIntervalInfo object to extract presence interval details from.
+    /// - Parameter agoraIntervalInfo: The AgoraRtmPresenceIntervalInfo object
+    ///                                to extract presence interval details from.
     internal init?(_ agoraIntervalInfo: AgoraRtmPresenceIntervalInfo?) {
         guard let agoraIntervalInfo = agoraIntervalInfo else { return nil }
         self.joinUserList = agoraIntervalInfo.joinUserList
         self.leaveUserList = agoraIntervalInfo.leaveUserList
         self.timeoutUserList = agoraIntervalInfo.timeoutUserList
-        self.userStateList = agoraIntervalInfo.userStateList.reduce(into: [String: [String: String]]()) { result, userState in
+        self.userStateList = agoraIntervalInfo.userStateList.reduce(
+            into: [String: [String: String]]()
+        ) { result, userState in
             var stateDict = [String: String]()
             userState.states.forEach { keyValue in
                 stateDict[keyValue.key] = keyValue.value

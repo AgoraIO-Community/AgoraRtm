@@ -27,7 +27,9 @@ import AgoraRtmKit
     ///   - port: The proxy server port.
     ///   - account: The account to authenticate with the proxy server, if required.
     ///   - password: The password to authenticate with the proxy server, if required.
-    @objc public init(proxyType: RtmProxyType, server: String, port: UInt16, account: String? = nil, password: String? = nil) {
+    @objc public init(
+        proxyType: RtmProxyType, server: String, port: UInt16, account: String? = nil, password: String? = nil
+    ) {
         config = AgoraRtmProxyConfig()
         if proxyType == .http {
             config.proxyType = .http

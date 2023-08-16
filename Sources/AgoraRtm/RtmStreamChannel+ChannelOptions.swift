@@ -12,14 +12,16 @@ public class RtmPublishOptions {
     /// The custom type of the message, up to 32 bytes for customization.
     public let customType: String
 
-    /// The time to calibrate data with media, only valid when a user joins the topic with `syncWithMedia` in a stream channel.
+    /// The time to calibrate data with media, only valid when a user joins the topic
+    /// with ``RtmJoinTopicOption/syncWithMedia`` in a stream channel.
     public var sendTs: UInt64 = 0
 
     /// Initializes an instance of `AgoraRtmPublishOptions`.
     ///
     /// - Parameters:
     ///   - customType: The custom type of the message, up to 32 bytes for customization.
-    ///   - sendTs: The time to calibrate data with media, only valid when a user joins the topic with `syncWithMedia` in a stream channel.
+    ///   - sendTs: The time to calibrate data with media, only valid when a user joins the topic
+    ///   with ``RtmJoinTopicOption/syncWithMedia`` in a stream channel.
     public init(customType: String, sendTs: UInt64 = 0) {
         self.customType = customType
         self.sendTs = sendTs

@@ -47,7 +47,9 @@ final class RtmClientConfigTests: XCTestCase {
         XCTAssertEqual(config.config.encryptionConfig?.encryptionKey, nil)
         config.encryptionConfig = .aes128GCM(key: "sampleKey", salt: "sampleSalt")
         XCTAssertEqual(config.config.encryptionConfig?.encryptionKey, "sampleKey")
-        XCTAssertEqual(String(data: config.config.encryptionConfig?.encryptionSalt ?? Data(), encoding: .utf8), "sampleSalt")
+        XCTAssertEqual(String(
+            data: config.config.encryptionConfig?.encryptionSalt ?? Data(), encoding: .utf8
+        ), "sampleSalt")
         XCTAssertEqual(config.config.encryptionConfig?.encryptionMode, .AES128GCM)
         XCTAssertEqual(config.encryptionConfig, .aes128GCM(key: "sampleKey", salt: "sampleSalt"))
     }
@@ -55,7 +57,9 @@ final class RtmClientConfigTests: XCTestCase {
     func testEncryptionConfigAES256GCM() {
         config.encryptionConfig = .aes256GCM(key: "sampleKey", salt: "sampleSalt")
         XCTAssertEqual(config.config.encryptionConfig?.encryptionKey, "sampleKey")
-        XCTAssertEqual(String(data: config.config.encryptionConfig?.encryptionSalt ?? Data(), encoding: .utf8), "sampleSalt")
+        XCTAssertEqual(String(
+            data: config.config.encryptionConfig?.encryptionSalt ?? Data(), encoding: .utf8
+        ), "sampleSalt")
         XCTAssertEqual(config.config.encryptionConfig?.encryptionMode, .AES256GCM)
         config.encryptionConfig = nil
         XCTAssertEqual(config.encryptionConfig, nil)

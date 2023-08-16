@@ -34,4 +34,3 @@ public struct RtmLegalCharacterSets {
     /// The `username` character set is the same as the ``channelName`` character set.
     public static let username = RtmLegalCharacterSets.channelName
 }
-

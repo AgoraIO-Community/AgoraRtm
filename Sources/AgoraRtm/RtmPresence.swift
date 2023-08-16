@@ -48,7 +48,6 @@ public struct RtmPresenceOptionFeatures: OptionSet {
     public static let all: RtmPresenceOptionFeatures = [.userId, .userState]
 }
 
-
 /// Represents options for querying presence information.
 public struct RtmPresenceQueryOptions {
     /// The paging object used for pagination.
@@ -76,7 +75,8 @@ public class RtmPresence {
     /// - Parameters:
     ///   - channel: The type and name of the channel.
     ///   - options: The query option. Default is nil.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhoNowResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmWhoNowResponse, RtmErrorInfo>`.
     public func fetchOnlineUsers(
         inChannel channel: RtmChannelDetails,
         options: RtmPresenceOptions? = nil,
@@ -102,7 +102,8 @@ public class RtmPresence {
     ///
     /// - Parameters:
     ///   - userId: The ID of the user.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhereNowResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmWhereNowResponse, RtmErrorInfo>`.
     public func fetchUserChannels(
         userId: String,
         completion: @escaping (Result<RtmUserChannelsResponse, RtmErrorInfo>) -> Void
@@ -174,7 +175,8 @@ public class RtmPresence {
     /// - Parameters:
     ///   - userId: The ID of the user.
     ///   - channel: The type and name of the channel.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmPresenceGetStateResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmPresenceGetStateResponse, RtmErrorInfo>`.
     public func getState(
         ofUser userId: String,
         fromChannel channel: RtmChannelDetails,

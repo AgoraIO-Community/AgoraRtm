@@ -29,12 +29,13 @@ public enum RtmLockEventType: Int {
 public class RtmLockDetail {
     /// The name of the lock.
     public var lockName: String
-    /// The owner of the lock. Only valid when the user gets locks or receives LockEvent with RTM_LOCK_EVENT_TYPE_SNAPSHOT.
+    /// The owner of the lock. Only valid when the user gets locks or receives
+    /// LockEvent with ``RtmLockEventType/snapshot``.
     public var owner: String
     /// The time-to-live (TTL) of the lock.
     public var ttl: Int32
 
-    /// Initializes an instance of `RtmLockDetail` with the provided lock details from AgoraRtmLockDetail.
+    /// Initializes an instance of ``RtmLockDetail`` with the provided lock details from ``AgoraRtmLockDetail``.
     ///
     /// - Parameter agorartmLockDetail: The AgoraRtmLockDetail instance to extract lock details from.
     internal init(_ agorartmLockDetail: AgoraRtmLockDetail) {

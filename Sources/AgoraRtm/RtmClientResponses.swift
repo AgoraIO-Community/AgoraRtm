@@ -15,7 +15,6 @@ internal protocol RtmResponseProtocol {
 }
 
 public class RtmCommonResponse: RtmResponseProtocol {
-    // You can add properties if needed, but this class doesn't have any specific properties in the Objective-C counterpart.
     internal let response: AgoraRtmCommonResponse
 
     required internal init(_ response: AgoraRtmCommonResponse) {
@@ -180,7 +179,6 @@ public class RtmOnlineUsersResponse: RtmResponseProtocol {
 
 @available(*, deprecated, renamed: "RtmOnlineUsersResponse")
 public typealias RtmWhoNowResponse = RtmOnlineUsersResponse
-
 
 public class RtmUserChannelsResponse: RtmResponseProtocol {
     internal let response: AgoraRtmWhereNowResponse

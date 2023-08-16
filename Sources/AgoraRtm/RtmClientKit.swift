@@ -79,7 +79,7 @@ open class RtmClientKit: NSObject {
     public func logout(
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        agoraRtmClient.logout() { resp, logoutErr in
+        agoraRtmClient.logout { resp, logoutErr in
             RtmClientKit.handleCompletion((resp, logoutErr), completion: completion, operation: #function)
         }
     }
@@ -210,7 +210,10 @@ open class RtmClientKit: NSObject {
             return
         }
 
-        agoraRtmClient.publish(channelName, message: msgString as NSString, withOption: publishOption?.objcVersion) { resp, err in
+        agoraRtmClient.publish(
+            channelName, message: msgString as NSString,
+            withOption: publishOption?.objcVersion
+        ) { resp, err in
             RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         }
     }
@@ -256,7 +259,6 @@ open class RtmClientKit: NSObject {
             throw RtmErrorInfo(errorCode: err.rawValue, operation: #function, reason: "")
         }
     }
-
 
     /// Creates a stream channel with the provided name.
     ///
@@ -321,7 +323,8 @@ public struct RtmSubscribeFeatures: OptionSet {
 
     /// Converts the `RtmSubscribeFeatures` to the corresponding `AgoraRtmSubscribeOptions` object.
     ///
-    /// - Returns: The `AgoraRtmSubscribeOptions` object with the subscription options set based on the ``RtmSubscribeFeatures``.
+    /// - Returns: The `AgoraRtmSubscribeOptions` object with the subscription
+    ///            options set based on the ``RtmSubscribeFeatures``.
     internal var objcVersion: AgoraRtmSubscribeOptions {
         let objcOpt = AgoraRtmSubscribeOptions()
         objcOpt.withMessage = self.contains(.messages)
@@ -354,7 +357,10 @@ public extension RtmClientKit {
 
 // Functions to handle the response cases for the objc library
 internal extension RtmClientKit {
-    static func handleCompletion<T: RtmResponseProtocol>(_ block: (resp: T.ResponseType?, err: AgoraRtmErrorInfo), completion: ((Result<T, RtmErrorInfo>) -> Void)? = nil, operation: String) {
+    static func handleCompletion<T: RtmResponseProtocol>(
+        _ block: (resp: T.ResponseType?, err: AgoraRtmErrorInfo),
+        completion: ((Result<T, RtmErrorInfo>) -> Void)?, operation: String
+    ) {
         // TODO: No function should not return a response if there's an error
         guard let completion else { return }
         if let err = RtmErrorInfo(from: block.err) { return completion(.failure(err)) }
@@ -364,7 +370,9 @@ internal extension RtmClientKit {
         completion(.success(T.init(resp)))
     }
 
-    static func handleCompletion<T: RtmResponseProtocol>(_ block: (resp: T.ResponseType?, err: AgoraRtmErrorInfo), operation: String) throws -> T {
+    static func handleCompletion<T: RtmResponseProtocol>(
+        _ block: (resp: T.ResponseType?, err: AgoraRtmErrorInfo), operation: String
+    ) throws -> T {
         // TODO: No function should not return a response if there's an error
         if let err = RtmErrorInfo(from: block.err) { throw err }
         guard let resp = block.resp else { throw RtmErrorInfo.noKnownError(operation: #function) }

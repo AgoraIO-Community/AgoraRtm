@@ -56,11 +56,13 @@ public protocol RtmClientDelegate: AnyObject {
 
     /// Called when the token privilege is about to expire.
     ///
-    /// Use this method to handle token privilege expiration. You can generate a new token and call the `renewToken` method to renew the token.
+    /// Use this method to handle token privilege expiration. You can generate a new token and call the
+    /// `renewToken` method to renew the token.
     ///
     /// - Parameters:
     ///   - rtmClient: The `RtmClientKit` instance for which the token privilege will expire.
-    ///   - channel: The name of the channel where the token privilege will expire. It can be nil if the token privilege applies to the whole app.
+    ///   - channel: The name of the channel where the token privilege will expire. It can be nil if
+    ///              the token privilege applies to the whole app.
     func rtmClient(_ rtmClient: RtmClientKit, tokenPrivilegeWillExpire channel: String?)
 
     /// Called when the connection state of the `RtmClientKit` changes.
@@ -69,7 +71,8 @@ public protocol RtmClientDelegate: AnyObject {
     ///
     /// - Parameters:
     ///   - rtmClient: The `RtmClientKit` instance for which the connection state changed.
-    ///   - channel: The name of the channel where the connection state changed. It can be nil if the connection state applies to the whole app.
+    ///   - channel: The name of the channel where the connection state changed. It can be nil if
+    ///              the connection state applies to the whole app.
     ///   - state: The new connection state of the `RtmClientKit`.
     ///   - reason: The reason for the connection state change.
     func rtmClient(

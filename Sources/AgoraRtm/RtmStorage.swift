@@ -28,7 +28,6 @@ public class RtmMetadataOptions {
     }
 }
 
-
 /// Represents storage operations for metadata in the Agora RTM system.
 public class RtmStorage {
 
@@ -50,4 +49,3 @@ public class RtmStorage {
         return RtmMetadata(agoraMetadata)
     }
 }
-
