@@ -16,7 +16,7 @@ public extension RtmPresence {
     ///   - channel: The type and name of the channel.
     ///   - options: Options for the query, including what information to include in the result.
     /// - Returns: An ``RtmOnlineUsersResponse`` object with the currently online users and their states.
-    func fetchOnlineUsers(
+    func getOnlineUsers(
         in channel: RtmChannelDetails, options: RtmPresenceOptions? = nil
     ) async throws -> RtmOnlineUsersResponse {
         let (channelName, channelType) = channel.objcVersion
@@ -31,31 +31,22 @@ public extension RtmPresence {
     /// - Parameters:
     ///   - userId: The ID of the user.
     /// - Returns: A ``RtmWhereNowResponse`` object with either the query response.
-    func fetchUserChannels(for userId: String) async throws -> RtmUserChannelsResponse {
+    func getUserChannels(for userId: String) async throws -> RtmUserChannelsResponse {
         return try RtmClientKit.handleCompletion(await self.presence.whereNow(userId), operation: #function)
     }
 
-    /// Asynchronously queries who is currently in a specified channel.
-    ///
-    /// - Parameters:
-    ///   - channel: The type and name of the channel.
-    ///   - options: Options for the query, including what information to include in the result.
-    /// - Returns: An ``RtmOnlineUsersResponse`` object with the currently online users and their states.
-    @available(*, deprecated, renamed: "fetchOnlineUsers(in:options:)")
+    /// > Renamed: ``getOnlineUsers(in:options:)``
+    @available(*, deprecated, renamed: "getOnlineUsers(in:options:)")
     func whoNow(
         inChannel channel: RtmChannelDetails,
         options: RtmPresenceOptions? = nil
     ) async throws -> RtmOnlineUsersResponse {
-        try await self.fetchOnlineUsers(in: channel, options: options)
+        try await self.getOnlineUsers(in: channel, options: options)
     }
-    /// Asynchronously queries which channels a user is currently in.
-    ///
-    /// - Parameters:
-    ///   - userId: The ID of the user.
-    /// - Returns: A ``RtmWhereNowResponse`` object with either the query response.
-    @available(*, deprecated, renamed: "fetchUserChannels(for:)")
+    /// > Renamed: ``getUserChannels(for:)``
+    @available(*, deprecated, renamed: "getUserChannels(for:)")
     func whereNow(userId: String) async throws -> RtmUserChannelsResponse {
-        try await self.fetchUserChannels(for: userId)
+        try await self.getUserChannels(for: userId)
     }
 
     /// Asynchronously sets the local user's state within a specified channel.

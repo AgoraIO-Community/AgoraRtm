@@ -24,7 +24,7 @@ let rtmConfig = RtmClientConfig(
 
 ## Setting Properties
 
-Once you've initialized the RtmClientConfig instance, you can set various properties to customize its behavior. Here's an example of setting the ``RtmClientConfig/areaCode`` property using ``RtmClientConfig/RtmAreaCode`` to choose where your data can be routed thorugh:
+Once you've initialized the RtmClientConfig instance, you can set various properties to customize its behavior. Here's an example of setting the ``RtmClientConfig/areaCode`` property using ``RtmAreaCode`` to choose where your data can be routed thorugh:
 
 ```swift
 // Set the areaCode property

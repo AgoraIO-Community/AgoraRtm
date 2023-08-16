@@ -77,7 +77,7 @@ public class RtmPresence {
     ///   - options: The query option. Default is nil.
     ///   - completion: The completion handler to be called with the operation result,
     ///                 `Result<RtmWhoNowResponse, RtmErrorInfo>`.
-    public func fetchOnlineUsers(
+    public func getOnlineUsers(
         inChannel channel: RtmChannelDetails,
         options: RtmPresenceOptions? = nil,
         completion: @escaping (Result<RtmOnlineUsersResponse, RtmErrorInfo>) -> Void
@@ -91,12 +91,13 @@ public class RtmPresence {
         }
     }
 
-    @available(*, deprecated, renamed: "fetchOnlineUsers(in:options:completion:)")
+    /// > Renamed: ``getOnlineUsers(inChannel:options:completion:)``
+    @available(*, deprecated, renamed: "getOnlineUsers(inChannel:options:completion:)")
     public func whoNow(
         inChannel channel: RtmChannelDetails,
         options: RtmPresenceOptions? = nil,
         completion: @escaping (Result<RtmOnlineUsersResponse, RtmErrorInfo>) -> Void
-    ) { self.fetchOnlineUsers(inChannel: channel, options: options, completion: completion) }
+    ) { self.getOnlineUsers(inChannel: channel, options: options, completion: completion) }
 
     /// Queries which channels the specified user has joined.
     ///
@@ -104,7 +105,7 @@ public class RtmPresence {
     ///   - userId: The ID of the user.
     ///   - completion: The completion handler to be called with the operation result,
     ///                 `Result<RtmWhereNowResponse, RtmErrorInfo>`.
-    public func fetchUserChannels(
+    public func getUserChannels(
         userId: String,
         completion: @escaping (Result<RtmUserChannelsResponse, RtmErrorInfo>) -> Void
     ) {
@@ -113,11 +114,12 @@ public class RtmPresence {
         }
     }
 
-    @available(*, deprecated, renamed: "fetchUserChannels(userId:completion:)")
+    /// > Renamed: ``getUserChannels(userId:completion:)``
+    @available(*, deprecated, renamed: "getUserChannels(userId:completion:)")
     public func whereNow(
         userId: String,
         completion: @escaping (Result<RtmUserChannelsResponse, RtmErrorInfo>) -> Void
-    ) { self.fetchUserChannels(userId: userId, completion: completion) }
+    ) { self.getUserChannels(userId: userId, completion: completion) }
 
     /// Sets the local user's state within a specified channel.
     ///

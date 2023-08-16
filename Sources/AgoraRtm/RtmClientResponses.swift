@@ -177,6 +177,7 @@ public class RtmOnlineUsersResponse: RtmResponseProtocol {
     }
 }
 
+/// > Renamed: ``RtmOnlineUsersResponse``
 @available(*, deprecated, renamed: "RtmOnlineUsersResponse")
 public typealias RtmWhoNowResponse = RtmOnlineUsersResponse
 
@@ -196,6 +197,7 @@ public class RtmUserChannelsResponse: RtmResponseProtocol {
     }
 }
 
+/// > Renamed: ``RtmUserChannelsResponse``
 @available(*, deprecated, renamed: "RtmUserChannelsResponse")
 public typealias RtmWhereNowResponse = RtmUserChannelsResponse
 

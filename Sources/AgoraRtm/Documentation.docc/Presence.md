@@ -15,10 +15,10 @@ Presence provides the ability to monitor user online, offline, and user historic
 
 ## Fetch User Channel Activity
 
-Using the ``RtmPresence/fetchUserChannels(for:)`` method, you can retrieve the channels that a specific user has joined in real-time.
+Using the ``RtmPresence/getUserChannels(for:)`` method, you can retrieve the channels that a specific user has joined in real-time.
 
 ```swift
-let response = try? await fetchUserChannels(for: "12345")
+let response = try? await getUserChannels(for: "12345")
 
 print("user in \(response.channels.count) channels")
 
@@ -34,8 +34,8 @@ for channel in response.channels {
 }
 ```
 
-- ``RtmPresence/fetchUserChannels(for:)``
-- ``RtmPresence/fetchUserChannels(userId:completion:)``
+- ``RtmPresence/getUserChannels(for:)``
+- ``RtmPresence/getUserChannels(userId:completion:)``
 - ``RtmUserChannelsResponse``
 
 An example result would be to print:
@@ -49,11 +49,11 @@ Channel Name: Channel3, Type: stream
 
 ## Fetch Online Users in Channel
 
-Using the ``RtmPresence/fetchOnlineUsers(in:options:)`` method, you can retrieve a list of users who are currently online in a specified channel.
+Using the ``RtmPresence/getOnlineUsers(in:options:)`` method, you can retrieve a list of users who are currently online in a specified channel.
 
 ```swift
 let channelDetail: RtmChannelDetails = .message("channel-name") // This is just a sample channel detail.
-let response = try? await fetchOnlineUsers(in: channelDetail)
+let response = try? await getOnlineUsers(in: channelDetail)
 
 print("\(response.totalOccupancy) users online in channel \(channelDetail)")
 
@@ -69,8 +69,8 @@ if let nextPage = response.nextPage {
 }
 ```
 
-- ``RtmPresence/fetchOnlineUsers(in:options:)``
-- ``RtmPresence/fetchOnlineUsers(inChannel:options:completion:)``
+- ``RtmPresence/getOnlineUsers(in:options:)``
+- ``RtmPresence/getOnlineUsers(inChannel:options:completion:)``
 - ``RtmOnlineUsersResponse``
 - ``RtmOnlineUsersResponse/userStateList``
 
