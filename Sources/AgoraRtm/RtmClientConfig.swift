@@ -16,7 +16,8 @@ import AgoraRtmKit
     /// - Parameters:
     ///   - appId: The unique identifier of the application.
     ///   - userId: The user ID for the RTM client.
-    ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer. Default is `true`.
+    ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer.
+    ///                      Default is `true`.
     @objc public init(appId: String, userId: String, useStringUserId: Bool = true) {
         config = AgoraRtmClientConfig()
         config.appId = appId
@@ -29,7 +30,8 @@ import AgoraRtmKit
     /// - Parameters:
     ///   - appId: The unique identifier of the application.
     ///   - userId: The user ID for the RTM client as an integer value.
-    ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer. Default is `false`.
+    ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer.
+    ///                      Default is `false`.
     public init(appId: String, userId: Int, useStringUserId: Bool = false) {
         config = AgoraRtmClientConfig()
         config.appId = appId
@@ -80,6 +82,23 @@ import AgoraRtmKit
 
     /// The encryption configuration for the RTM client.
     public var encryptionConfig: RtmEncryptionConfig? {
+        get {
+            guard let encConf = config.encryptionConfig, encConf.encryptionMode != .none,
+                    let encKey = encConf.encryptionKey else {
+                return nil
+            }
+            let salt = encConf.encryptionSalt
+            var saltStr: String?
+            if let salt {
+                saltStr = String(data: salt, encoding: .utf8)
+            }
+            switch encConf.encryptionMode {
+            case .none: return nil
+            case .AES128GCM: return .aes128GCM(key: encKey, salt: saltStr)
+            case .AES256GCM: return .aes256GCM(key: encKey, salt: saltStr)
+            @unknown default: return nil
+            }
+        }
         set {
             guard let newValue = newValue else {
                 config.encryptionConfig = nil
@@ -100,23 +119,6 @@ import AgoraRtmKit
             }
             self._encryptionConfig = encConfig
             config.encryptionConfig = encConfig
-        }
-        get {
-            guard let encConf = config.encryptionConfig, encConf.encryptionMode != .none,
-                    let encKey = encConf.encryptionKey else {
-                return nil
-            }
-            let salt = encConf.encryptionSalt
-            var saltStr: String? = nil
-            if let salt {
-                saltStr = String(data: salt, encoding: .utf8)
-            }
-            switch encConf.encryptionMode {
-            case .none: return nil
-            case .AES128GCM: return .aes128GCM(key: encKey, salt: saltStr)
-            case .AES256GCM: return .aes256GCM(key: encKey, salt: saltStr)
-            @unknown default: return nil
-            }
         }
     }
 }

@@ -16,7 +16,8 @@ extension RtmStorage {
     ///   - data: The metadata data to be set for the channel.
     ///   - options: The options for operating the metadata. Default is nil.
     ///   - lock: The lock for operating channel metadata. Default is nil.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
     public func setMetadata(
         forChannel channel: RtmChannelDetails,
         data: RtmMetadata,
@@ -25,7 +26,9 @@ extension RtmStorage {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         guard let metadata = data.agoraMetadata else {
-            completion?(.failure(RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")))
+            completion?(.failure(RtmErrorInfo(
+                errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata"
+            )))
             return
         }
         let (channelName, channelType) = channel.objcVersion
@@ -75,7 +78,8 @@ extension RtmStorage {
     ///   - data: The metadata data to be updated for the channel.
     ///   - options: The options for operating the metadata. Default is nil.
     ///   - lock: The lock for operating channel metadata. Default is nil.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
     public func updateMetadata(
         forChannel channel: RtmChannelDetails,
         data: RtmMetadata,
@@ -84,7 +88,9 @@ extension RtmStorage {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         guard let metadata = data.agoraMetadata else {
-            completion?(.failure(RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")))
+            completion?(.failure(RtmErrorInfo(
+                errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata"
+            )))
             return
         }
         let (channelName, channelType) = channel.objcVersion
@@ -107,7 +113,7 @@ extension RtmStorage {
     ///   - data: The metadata data to be set for the channel.
     ///   - options: The options for operating the metadata. Default is nil.
     ///   - lock: The lock for operating channel metadata. Default is nil.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains ``RtmCommonResponse``. On failure, it contains ``RtmErrorInfo``.
+    /// - Returns: On success, it returns ``RtmCommonResponse``. On failure, it throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
     public func updateMetadata(
         forChannel channel: RtmChannelDetails,
@@ -135,7 +141,8 @@ extension RtmStorage {
     ///   - data: The metadata data to be removed from the channel.
     ///   - options: The options for operating the metadata. Default is nil.
     ///   - lock: The lock for operating channel metadata. Default is nil.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
     public func removeMetadata(
         fromChannel channel: RtmChannelDetails,
         data: RtmMetadata,
@@ -144,7 +151,9 @@ extension RtmStorage {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         guard let metadata = data.agoraMetadata else {
-            completion?(.failure(RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")))
+            completion?(.failure(RtmErrorInfo(
+                errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata"
+            )))
             return
         }
         let (channelName, channelType) = channel.objcVersion
@@ -167,7 +176,8 @@ extension RtmStorage {
     ///   - data: The metadata data to be removed from the channel.
     ///   - options: The options for operating the metadata. Default is nil.
     ///   - lock: The lock for operating channel metadata. Default is nil.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains ``RtmCommonResponse``. On failure, it contains ``RtmErrorInfo``.
+    /// - Returns: On success, it returns ``RtmCommonResponse``.
+    ///            On failure, it throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
     public func removeMetadata(
         fromChannel channel: RtmChannelDetails,
@@ -176,7 +186,9 @@ extension RtmStorage {
         lock: String? = nil
     ) async throws -> RtmCommonResponse {
         guard let metadata = data.agoraMetadata else {
-            throw RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
+            throw RtmErrorInfo(
+                errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata"
+            )
         }
         let (channelName, channelType) = channel.objcVersion
         return try RtmClientKit.handleCompletion(await storage.removeChannelMetadata(
@@ -192,7 +204,8 @@ extension RtmStorage {
     /// - Parameters:
     ///   - channelName: The name of the channel.
     ///   - channelType: The channel type, either RTM_CHANNEL_TYPE_STREAM or RTM_CHANNEL_TYPE_MESSAGE.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmGetMetadataResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmGetMetadataResponse, RtmErrorInfo>`.
     public func getMetadata(
         forChannel channel: RtmChannelDetails,
         completion: @escaping (Result<RtmGetMetadataResponse, RtmErrorInfo>) -> Void
@@ -209,7 +222,8 @@ extension RtmStorage {
     ///
     /// - Parameters:
     ///   - channel: The type and name of the channel.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains an optional ``RtmGetMetadataResponse``. On failure, it contains `RtmErrorInfo`.
+    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains
+    ///            an optional ``RtmGetMetadataResponse``. On failure, it contains `RtmErrorInfo`.
     @available(iOS 13.0.0, *)
     public func getMetadata(
         forChannel channel: RtmChannelDetails

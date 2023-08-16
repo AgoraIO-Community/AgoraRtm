@@ -7,7 +7,8 @@
 
 import AgoraRtmKit
 
-/// A class that wraps an `AgoraRtmStreamChannel`, providing convenient methods to interact with the channel in the Agora RTM SDK.
+/// A class that wraps an `AgoraRtmStreamChannel`, providing convenient methods
+/// to interact with the channel in the Agora RTM SDK.
 open class RtmStreamChannel: NSObject {
     private let channel: AgoraRtmStreamChannel
 
@@ -29,7 +30,8 @@ open class RtmStreamChannel: NSObject {
     /// - Parameters:
     ///   - option: The ``RtmJoinChannelOption`` to use for joining the channel.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful ``RtmCommonResponse`` or an error of type `RtmErrorInfo`.
+    ///                 The result will contain either a successful ``RtmCommonResponse``
+    ///                 or an error of type ``RtmErrorInfo``.
     public func join(
         with option: RtmJoinChannelOption,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
@@ -41,13 +43,16 @@ open class RtmStreamChannel: NSObject {
 
     /// Asynchronously joins a channel with specified options.
     ///
-    /// Use this method to join a channel with the desired settings, allowing more granular control over channel behavior.
+    /// Use this method to join a channel with the desired settings,
+    /// allowing more granular control over channel behavior.
     ///
-    /// - Parameter option: The configuration options for joining the channel, encapsulated in an ``RtmJoinChannelOption`` object.
+    /// - Parameter option: The configuration options for joining the channel,
+    ///                     encapsulated in an ``RtmJoinChannelOption`` object.
     ///
     /// - Throws: ``RtmErrorInfo`` if an error occurs during the join attempt.
     ///
-    /// - Returns: A response confirming the result of the join attempt, encapsulated in an ``RtmCommonResponse`` object.
+    /// - Returns: A response confirming the result of the join attempt,
+    ///            encapsulated in an ``RtmCommonResponse`` object.
     @available(iOS 13.0.0, *)
     public func join(
         with option: RtmJoinChannelOption
@@ -57,11 +62,11 @@ open class RtmStreamChannel: NSObject {
         )
     }
 
-
     /// Leaves the stream channel.
     ///
     /// - Parameter completion: An optional completion block that will be called with the result of the operation.
-    ///                         The result will contain either a successful ``RtmCommonResponse`` or an error of type ``RtmErrorInfo``.
+    ///                         The result will contain either a successful ``RtmCommonResponse``
+    ///                         or an error of type ``RtmErrorInfo``.
     public func leave(
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
@@ -75,13 +80,13 @@ open class RtmStreamChannel: NSObject {
         return try RtmClientKit.handleCompletion(await channel.leave(), operation: #function)
     }
 
-
     /// Renews the token for the stream channel.
     ///
     /// - Parameters:
     ///   - token: The new token to renew.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful ``RtmCommonResponse`` or an error of type `RtmErrorInfo`.
+    ///                 The result will contain either a successful ``RtmCommonResponse``
+    ///                 or an error of type `RtmErrorInfo`.
     public func renewToken(
         _ token: String,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
@@ -102,12 +107,13 @@ open class RtmStreamChannel: NSObject {
     ///   - topic: The name of the stream channel to join.
     ///   - option: The ``RtmJoinTopicOption`` to use for joining the channel.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful `RtmCommonResponse` or an error of type `RtmErrorInfo`.
+    ///                 The result will contain either a successful `RtmCommonResponse`
+    ///                 or an error of type `RtmErrorInfo`.
     public func joinTopic(
         _ topic: String, with option: RtmJoinTopicOption?,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.joinTopic(topic, with: option?.objcVersion, completion:  { resp, err in
+        channel.joinTopic(topic, with: option?.objcVersion, completion: { resp, err in
             RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         })
     }
@@ -241,7 +247,8 @@ open class RtmStreamChannel: NSObject {
     ///   - message: The message to be published. Must be `Codable`.
     ///   - topic: The name of the topic to which the message will be published.
     ///   - options: Optional configurations for publishing the message. Defaults to `nil`.
-    ///   - completion: A completion block that returns a result containing an ``RtmCommonResponse`` or ``RtmErrorInfo``.
+    ///   - completion: A completion block that returns a result containing an ``RtmCommonResponse``
+    ///                 or ``RtmErrorInfo``.
     public func publishTopicMessage(
         _ message: Codable, in topic: String, with options: RtmPublishOptions?,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
@@ -306,7 +313,8 @@ open class RtmStreamChannel: NSObject {
     /// - Parameters:
     ///   - topic: The name of the stream channel to retrieve the list of subscribed users from.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful array of user IDs or an error of type ``RtmErrorInfo``.
+    ///                 The result will contain either a successful array of user IDs
+    ///                 or an error of type ``RtmErrorInfo``.
     public func getSubscribedUserList(
         forTopic topic: String,
         completion: ((Result<[String], RtmErrorInfo>) -> Void)? = nil
@@ -338,7 +346,8 @@ open class RtmStreamChannel: NSObject {
 
     /// Destroys the stream channel.
     ///
-    /// - Returns: The error code associated with the destruction of the channel, or `nil` if the destruction is successful.
+    /// - Returns: The error code associated with the destruction of the channel,
+    ///            or `nil` if the destruction is successful.
     func destroy() -> RtmErrorCode? {
         let destroyCode = channel.destroy()
         if destroyCode == .ok { return nil }

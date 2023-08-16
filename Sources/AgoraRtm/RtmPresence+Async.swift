@@ -124,4 +124,3 @@ public extension RtmPresence {
         ), operation: #function)
     }
 }
-

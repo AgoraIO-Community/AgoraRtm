@@ -29,7 +29,7 @@ public enum RtmMessageType: Int {
 
 /// A representation of an RTM message.
 public struct RtmMessage {
-    
+
     public let data: NSObject?
     /// The type of the message.
     public let type: RtmMessageType

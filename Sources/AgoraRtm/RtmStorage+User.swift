@@ -14,7 +14,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - data: The metadata data to be set for the user.
     ///   - options: The options for operating the metadata. Default is nil.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
     public func setUserMetadata(
         userId: String,
         data: RtmMetadata,
@@ -22,7 +23,9 @@ extension RtmStorage {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         guard let metadata = data.agoraMetadata else {
-            completion?(.failure(RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")))
+            completion?(.failure(RtmErrorInfo(
+                errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
+            ))
             return
         }
         let agoraOptions = options?.objcVersion
@@ -42,7 +45,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - data: The metadata data to be set for the user.
     ///   - options: The options for operating the metadata. Default is nil.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains ``RtmCommonResponse``. On failure, it contains ``RtmErrorInfo``.
+    /// - Returns: On success, it returns ``RtmCommonResponse``.
+    ///            On failure, it throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
     public func setUserMetadata(
         userId: String,
@@ -50,13 +54,16 @@ extension RtmStorage {
         options: RtmMetadataOptions? = nil
     ) async throws -> RtmCommonResponse {
         guard let metadata = data.agoraMetadata else {
-            throw RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
+            throw RtmErrorInfo(
+                errorCode: .storageInvalidMetadataItem,
+                operation: #function, reason: "bad metadata"
+            )
         }
         return try RtmClientKit.handleCompletion(await storage.setUserMetadata(
             userId,
             data: metadata,
             options: options?.objcVersion
-        ),operation: #function)
+        ), operation: #function)
     }
 
     /// Updates the metadata of a specified user.
@@ -65,7 +72,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - data: The metadata data to be updated for the user.
     ///   - options: The options for operating the metadata. Default is nil.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
     public func updateUserMetadata(
         userId: String,
         data: RtmMetadata,
@@ -73,7 +81,9 @@ extension RtmStorage {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         guard let metadata = data.agoraMetadata else {
-            completion?(.failure(RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")))
+            completion?(.failure(RtmErrorInfo(
+                errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
+            ))
             return
         }
         let agoraOptions = options?.objcVersion
@@ -92,7 +102,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - data: The metadata data to be updated for the user.
     ///   - options: The options for operating the metadata. Default is nil.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains `RtmCommonResponse`. On failure, it contains `RtmErrorInfo`.
+    /// - Returns: On success, it returns `RtmCommonResponse`.
+    ///            On failure, it throws `RtmErrorInfo`.
     @available(iOS 15.0.0, *)
     public func updateUserMetadata(
         userId: String,
@@ -106,7 +117,7 @@ extension RtmStorage {
             userId,
             data: metadata,
             options: options?.objcVersion
-        ) ,operation: #function)
+        ), operation: #function)
     }
 
     /// Removes the metadata of a specified user.
@@ -115,7 +126,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - data: The metadata data to be removed from the user.
     ///   - options: The options for operating the metadata. Default is nil.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
     public func removeUserMetadata(
         userId: String,
         data: RtmMetadata,
@@ -123,7 +135,9 @@ extension RtmStorage {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         guard let metadata = data.agoraMetadata else {
-            completion?(.failure(RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")))
+            completion?(.failure(RtmErrorInfo(
+                errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
+            ))
             return
         }
         let agoraOptions = options?.objcVersion
@@ -142,7 +156,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - data: The metadata data to be removed from the user.
     ///   - options: The options for operating the metadata. Default is nil.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains `RtmCommonResponse`. On failure, it contains `RtmErrorInfo`.
+    /// - Returns: On success, it returns `RtmCommonResponse`.
+    ///            On failure, it throws `RtmErrorInfo`.
     @available(iOS 13.0.0, *)
     public func removeUserMetadata(
         userId: String,
@@ -163,7 +178,8 @@ extension RtmStorage {
     ///
     /// - Parameters:
     ///   - userId: The user ID of the specified user.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmGetMetadataResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmGetMetadataResponse, RtmErrorInfo>`.
     public func getUserMetadata(
         userId: String,
         completion: @escaping (Result<RtmGetMetadataResponse, RtmErrorInfo>) -> Void
@@ -177,7 +193,8 @@ extension RtmStorage {
     ///
     /// - Parameters:
     ///   - userId: The user ID of the specified user.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains an optional `RtmMetadata`. On failure, it contains `RtmErrorInfo`.
+    /// - Returns: On success, it returns ``RtmMetadata``.
+    ///            On failure, throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
     public func getUserMetadata(
         userId: String
@@ -191,7 +208,8 @@ extension RtmStorage {
     ///
     /// - Parameters:
     ///   - userId: The user ID of the specified user.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
     public func subscribeUserMetadata(
         userId: String,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
@@ -205,7 +223,8 @@ extension RtmStorage {
     ///
     /// - Parameters:
     ///   - userId: The user ID of the specified user.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains `RtmCommonResponse`. On failure, it contains `RtmErrorInfo`.
+    /// - Returns: On success, it returns ``RtmCommonResponse``.
+    ///            On failure, it throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
     public func subscribeUserMetadata(
         userId: String
@@ -217,7 +236,8 @@ extension RtmStorage {
     ///
     /// - Parameters:
     ///   - userId: The user ID of the specified user.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmCommonResponse, RtmErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result,
+    ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
     public func unsubscribeUserMetadata(
         userId: String,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
@@ -231,7 +251,8 @@ extension RtmStorage {
     ///
     /// - Parameters:
     ///   - userId: The user ID of the specified user.
-    /// - Returns: A `Result` indicating the operation's success or failure. On success, it contains `RtmCommonResponse`. On failure, it contains `RtmErrorInfo`.
+    /// - Returns: On success, it returns ``RtmCommonResponse``.
+    ///            On failure, it throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
     public func unsubscribeUserMetadata(
         userId: String

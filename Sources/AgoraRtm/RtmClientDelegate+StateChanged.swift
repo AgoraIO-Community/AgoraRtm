@@ -16,10 +16,12 @@ public enum RtmClientConnectionState: Int {
     /// The SDK is connecting to the server.
     case connecting = 2
 
-    /// The SDK is connected to the server and has joined a channel. You can now publish or subscribe to a track in the channel.
+    /// The SDK is connected to the server and has joined a channel.
+    /// You can now publish or subscribe to a track in the channel.
     case connected = 3
 
-    /// The SDK keeps rejoining the channel after being disconnected from the channel, probably because of network issues.
+    /// The SDK keeps rejoining the channel after being disconnected from the channel,
+    /// likely due to network issues.
     case reconnecting = 4
 
     /// The SDK fails to connect to the server or join the channel.
@@ -68,7 +70,8 @@ public enum RtmClientConnectionChangeReason: Int {
     /// When the connection state changes because the app has renewed the token.
     case renewToken = 12
 
-    /// The IP Address of the app has changed. A change in the network type or IP/Port changes the IP address of the app.
+    /// The IP Address of the app has changed.
+    /// A change in the network type or IP/Port changes the IP address of the app.
     case clientIpAddressChanged = 13
 
     /// A timeout occurs for the keep-alive of the connection between the SDK and the server.

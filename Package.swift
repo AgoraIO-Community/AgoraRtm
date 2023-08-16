@@ -12,12 +12,16 @@ let package = Package(
         .library(
             name: "AgoraRtmKit-OC",
             targets: ["AgoraRtmKit-OC"]
-        ),
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/realm/SwiftLint.git", from: .init(0, 52, 4))
     ],
     targets: [
         .target(
             name: "AgoraRtm",
-            dependencies: ["AgoraRtmKit-OC"]
+            dependencies: ["AgoraRtmKit-OC"],
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .binaryTarget(
             name: "AgoraRtmKit-OC",
