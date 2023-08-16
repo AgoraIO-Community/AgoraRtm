@@ -30,7 +30,8 @@ let package = Package(
         ),
         .testTarget(
             name: "AgoraRtmTests",
-            dependencies: ["AgoraRtm"]
+            dependencies: ["AgoraRtm"],
+            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         )
     ]
 )
