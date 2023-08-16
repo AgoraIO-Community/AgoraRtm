@@ -30,7 +30,7 @@ public extension RtmPresence {
     ///
     /// - Parameters:
     ///   - userId: The ID of the user.
-    /// - Returns: A ``RtmWhereNowResponse`` object with either the query response.
+    /// - Returns: A ``RtmUserChannelsResponse`` object with either the query response.
     func getUserChannels(for userId: String) async throws -> RtmUserChannelsResponse {
         return try RtmClientKit.handleCompletion(await self.presence.whereNow(userId), operation: #function)
     }

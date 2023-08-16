@@ -104,7 +104,7 @@ public class RtmPresence {
     /// - Parameters:
     ///   - userId: The ID of the user.
     ///   - completion: The completion handler to be called with the operation result,
-    ///                 `Result<RtmWhereNowResponse, RtmErrorInfo>`.
+    ///                 `Result<RtmUserChannelsResponse, RtmErrorInfo>`.
     public func getUserChannels(
         userId: String,
         completion: @escaping (Result<RtmUserChannelsResponse, RtmErrorInfo>) -> Void

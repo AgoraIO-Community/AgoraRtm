@@ -39,6 +39,6 @@ AgoraRtm is a class that provides real-time messaging functionalities for applic
 - ``RtmGetLocksResponse``
 - ``RtmGetMetadataResponse``
 - ``RtmTopicSubscriptionResponse``
-- ``RtmWhoNowResponse``
-- ``RtmWhereNowResponse``
+- ``RtmOnlineUsersResponse``
+- ``RtmUserChannelsResponse``
 - ``RtmPresenceGetStateResponse``
