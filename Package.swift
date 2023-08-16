@@ -15,13 +15,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/realm/SwiftLint.git", from: .init(0, 52, 4))
+//        .package(url: "https://github.com/realm/SwiftLint.git", from: .init(0, 52, 4))
     ],
     targets: [
         .target(
             name: "AgoraRtm",
-            dependencies: ["AgoraRtmKit-OC"],
-            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+            dependencies: ["AgoraRtmKit-OC"]
+//            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .binaryTarget(
             name: "AgoraRtmKit-OC",
@@ -30,8 +30,8 @@ let package = Package(
         ),
         .testTarget(
             name: "AgoraRtmTests",
-            dependencies: ["AgoraRtm"],
-            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+            dependencies: ["AgoraRtm"]
+//            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         )
     ]
 )
