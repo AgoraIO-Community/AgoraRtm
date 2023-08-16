@@ -56,58 +56,41 @@ open class RtmClientKit: NSObject {
     ///   - completion: The completion handler to call when the login operation is complete.
     public func login(
         byToken token: String?,
-        completion: ((Result<AgoraRtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        agoraRtmClient.login(byToken: token) { loginResp, loginErr in
-            guard let completion = completion else { return }
-            guard let response = loginResp else {
-                completion(.failure(RtmBaseErrorInfo(from: loginErr) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(response))
+        agoraRtmClient.login(byToken: token) { loginResp, err in
+            // TODO: Login should not return a response if there's an error
+            RtmClientKit.handleCompletion((loginResp, err), completion: completion, operation: #function)
         }
     }
 
     /// Asynchronously logs into the Agora RTM system.
     ///
     /// - Parameter token: The token to log in with.
-    /// - Returns: A ``RtmCommonResponse`` if the login is successful, otherwise throws an ``RtmBaseErrorInfo`` error.
+    /// - Returns: A ``RtmCommonResponse`` if the login is successful, otherwise throws an ``RtmErrorInfo`` error.
     @available(iOS 13.0.0, *) @discardableResult
     public func login(byToken token: String? = nil) async throws -> RtmCommonResponse {
-        let (loginResp, err) = await agoraRtmClient.login(byToken: token)
-        if let response = loginResp {
-            return .init(response)
-        }
-        throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
+        return try RtmClientKit.handleCompletion(await agoraRtmClient.login(byToken: token), operation: #function)
     }
 
     /// Logs out of the Agora RTM system.
     ///
     /// - Parameter completion: The completion handler to call when the logout operation is complete.
     public func logout(
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         agoraRtmClient.logout() { resp, logoutErr in
-            guard let completion = completion else { return }
-            guard let resp else {
-                completion(.failure(RtmBaseErrorInfo(from: logoutErr) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+            RtmClientKit.handleCompletion((resp, logoutErr), completion: completion, operation: #function)
         }
     }
 
     /// Asynchronously logs out of the Agora RTM system.
     ///
-    /// This method can throw an ``RtmBaseErrorInfo`` error if the logout operation fails.
+    /// This method can throw an ``RtmErrorInfo`` error if the logout operation fails.
     @available(iOS 13.0.0, *)
     @discardableResult
     public func logout() async throws -> RtmCommonResponse {
-        let (resp, err) = await agoraRtmClient.logout()
-        guard let resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(await agoraRtmClient.logout(), operation: #function)
     }
 
     /// Renews the token for the Agora RTM client.
@@ -117,15 +100,10 @@ open class RtmClientKit: NSObject {
     ///   - completion: The completion handler to call when the token renewal operation is complete.
     public func renewToken(
         _ token: String,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        agoraRtmClient.renewToken(token) { resp, renewErr in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                completion(.failure(RtmBaseErrorInfo(from: renewErr) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+        agoraRtmClient.renewToken(token) { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -134,14 +112,10 @@ open class RtmClientKit: NSObject {
     /// - Parameters:
     ///   - token: The new token to renew.
     ///
-    /// This method can throw a ``RtmBaseErrorInfo`` error if the token renewal operation fails.
+    /// This method can throw a ``RtmErrorInfo`` error if the token renewal operation fails.
     @available(iOS 13.0.0, *) @discardableResult
     public func renewToken(_ token: String) async throws -> RtmCommonResponse {
-        let (resp, err) = await agoraRtmClient.renewToken(token)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(await agoraRtmClient.renewToken(token), operation: #function)
     }
 
     /// Subscribes to a channel with the provided name and options.
@@ -155,15 +129,10 @@ open class RtmClientKit: NSObject {
     public func subscribe(
         toChannel channelName: String,
         features: RtmSubscribeFeatures = [.messages, .presence],
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        agoraRtmClient.subscribe(withChannel: channelName, option: features.objcVersion) { resp, subErr in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                completion(.failure(RtmBaseErrorInfo(from: subErr) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+        agoraRtmClient.subscribe(withChannel: channelName, option: features.objcVersion) { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -178,11 +147,9 @@ open class RtmClientKit: NSObject {
     public func subscribe(
         toChannel channelName: String, features: RtmSubscribeFeatures = [.messages, .presence]
     ) async throws -> RtmCommonResponse {
-        let (resp, err) = await agoraRtmClient.subscribe(withChannel: channelName, option: features.objcVersion)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(await agoraRtmClient.subscribe(
+            withChannel: channelName, option: features.objcVersion
+        ), operation: #function)
     }
 
     /// Unsubscribes from a channel with the provided name.
@@ -194,15 +161,10 @@ open class RtmClientKit: NSObject {
     ///   which indicates the response of the unsubscription operation.
     public func unsubscribe(
         fromChannel channelName: String,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        agoraRtmClient.unsubscribe(withChannel: channelName) { resp, subErr in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                completion(.failure(RtmBaseErrorInfo(from: subErr) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+        agoraRtmClient.unsubscribe(withChannel: channelName) { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -214,12 +176,9 @@ open class RtmClientKit: NSObject {
     /// This method can throw a ``RtmCommonResponse`` error if the unsubscription operation fails.
     @available(iOS 13.0.0, *) @discardableResult
     public func unsubscribe(fromChannel channelName: String) async throws -> RtmCommonResponse {
-        let (resp, err) = await agoraRtmClient.unsubscribe(withChannel: channelName)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-//            throw RtmUnsubscribeErrorInfo(from: err) ?? .noKnownError
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(
+            await agoraRtmClient.unsubscribe(withChannel: channelName), operation: #function
+        )
     }
 
     /// Publishes a message in the specified channel.
@@ -235,30 +194,24 @@ open class RtmClientKit: NSObject {
         message: Codable,
         to channelName: String,
         withOption publishOption: RtmPublishOptions? = nil,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let msgString: String
         do {
             msgString = try message.convertToString()
-        } catch let error as RtmBaseErrorInfo {
+        } catch let error as RtmErrorInfo {
             completion?(.failure(error))
             return
         } catch {
-            completion?(.failure(RtmBaseErrorInfo(
+            completion?(.failure(RtmErrorInfo(
                 errorCode: .channelInvalidMessage, operation: #function,
                 reason: "could not encode message: \(error.localizedDescription)"
             )))
             return
         }
 
-        agoraRtmClient.publish(channelName, message: msgString as NSString, withOption: publishOption?.objcVersion) { resp, pubErr in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                completion(.failure(RtmBaseErrorInfo(from: pubErr) ?? .noKnownError(operation: #function)))
-//                completion(.failure(RtmPublishErrorInfo(from: pubErr) ?? .noKnownError))
-                return
-            }
-            completion(.success(.init(resp)))
+        agoraRtmClient.publish(channelName, message: msgString as NSString, withOption: publishOption?.objcVersion) { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -269,7 +222,7 @@ open class RtmClientKit: NSObject {
     ///   - channelName: The name of the channel to publish the message to.
     ///   - publishOption: The options for publishing the message.
     ///
-    /// This method will throw an ``RtmBaseErrorInfo`` if the encoding or publish operation fails.
+    /// This method will throw an ``RtmErrorInfo`` if the encoding or publish operation fails.
     @discardableResult @available(iOS 13.0.0, *)
     public func publish(
         message: Codable, to channelName: String, withOption publishOption: RtmPublishOptions? = nil
@@ -277,30 +230,30 @@ open class RtmClientKit: NSObject {
         let msgString: String
         do {
             msgString = try message.convertToString()
-        } catch let error as RtmBaseErrorInfo {
+        } catch let error as RtmErrorInfo {
             throw error
         } catch {
-            throw RtmBaseErrorInfo(
+            throw RtmErrorInfo(
                 errorCode: .channelInvalidMessage, operation: #function,
                 reason: "could not encode message: \(error.localizedDescription)"
             )
         }
-        let (resp, err) = await agoraRtmClient.publish(channelName, message: msgString as NSString, withOption: publishOption?.objcVersion)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(await agoraRtmClient.publish(
+            channelName,
+            message: msgString as NSString,
+            withOption: publishOption?.objcVersion
+        ), operation: #function)
     }
 
     /// Sets the parameters for the Agora RTM client.
     ///
     /// - Parameter parameters: The parameters to set.
     ///
-    /// This method can throw an ``RtmBaseErrorInfo`` error if the parameter setting fails.
+    /// This method can throw an ``RtmErrorInfo`` error if the parameter setting fails.
     public func setParameters(_ parameters: String) throws {
         let err = agoraRtmClient.setParameters(parameters)
         if err != .ok {
-            throw RtmBaseErrorInfo(errorCode: err.rawValue, operation: #function, reason: "")
+            throw RtmErrorInfo(errorCode: err.rawValue, operation: #function, reason: "")
         }
     }
 
@@ -316,8 +269,8 @@ open class RtmClientKit: NSObject {
     /// Destroys the Agora RTM client.
     ///
     /// - Returns: The error code indicating the result of the destruction, or nil if successful.
-    public func destroy() -> RtmBaseErrorCode? {
-        RtmBaseErrorCode(rawValue: agoraRtmClient.destroy().rawValue)
+    public func destroy() -> RtmErrorCode? {
+        RtmErrorCode(rawValue: agoraRtmClient.destroy().rawValue)
     }
 }
 
@@ -384,7 +337,7 @@ public extension RtmClientKit {
     ///
     /// - Parameter errorCode: The error code for which to get the reason.
     /// - Returns: The error reason string or nil if the error code is invalid.
-    static func getErrorReason(_ errorCode: RtmBaseErrorCode) -> String? {
+    static func getErrorReason(_ errorCode: RtmErrorCode) -> String? {
         guard let agoraErr = AgoraRtmErrorCode(
             rawValue: errorCode.rawValue
         ) else { return nil }
@@ -397,4 +350,25 @@ public extension RtmClientKit {
     static func getVersion() -> String {
         AgoraRtmClientKit.getVersion()
     }
+}
+
+// Functions to handle the response cases for the objc library
+internal extension RtmClientKit {
+    static func handleCompletion<T: RtmResponseProtocol>(_ block: (resp: T.ResponseType?, err: AgoraRtmErrorInfo), completion: ((Result<T, RtmErrorInfo>) -> Void)? = nil, operation: String) {
+        // TODO: No function should not return a response if there's an error
+        guard let completion else { return }
+        if let err = RtmErrorInfo(from: block.err) { return completion(.failure(err)) }
+        guard let resp = block.resp else {
+            return completion(.failure(.noKnownError(operation: operation)))
+        }
+        completion(.success(T.init(resp)))
+    }
+
+    static func handleCompletion<T: RtmResponseProtocol>(_ block: (resp: T.ResponseType?, err: AgoraRtmErrorInfo), operation: String) throws -> T {
+        // TODO: No function should not return a response if there's an error
+        if let err = RtmErrorInfo(from: block.err) { throw err }
+        guard let resp = block.resp else { throw RtmErrorInfo.noKnownError(operation: #function) }
+        return .init(resp)
+    }
+
 }

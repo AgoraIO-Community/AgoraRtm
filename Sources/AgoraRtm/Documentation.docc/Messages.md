@@ -51,7 +51,7 @@ try? await rtmClient.publish(
 
 Synchronous option for publishing is also available.
 
-The async method will throw an error of type ``RtmBaseErrorInfo`` if there's any issue creating the message or publishing it.
+The async method will throw an error of type ``RtmErrorInfo`` if there's any issue creating the message or publishing it.
 
 ## Receiving Messages
 
@@ -71,7 +71,7 @@ try? await rtmClient.subscribe(
 )
 ```
 
-The async method will throw an error of type ``RtmBaseErrorInfo`` if there's any issue subscribing to the channel.
+The async method will throw an error of type ``RtmErrorInfo`` if there's any issue subscribing to the channel.
 
 ### Delegate Message Events
 

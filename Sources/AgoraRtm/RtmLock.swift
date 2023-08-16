@@ -57,7 +57,7 @@ public class RtmLock {
         named lockName: String,
         forChannel channel: RtmChannelDetails,
         ttl: Int32,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
         lock.setLock(
@@ -65,12 +65,7 @@ public class RtmLock {
             lockName: lockName,
             ttl: ttl
         ) { resp, error in
-            guard let completion = completion else { return }
-            guard let resp else {
-                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -82,19 +77,14 @@ public class RtmLock {
     public func removeLock(
         named lockName: String,
         fromChannel channel: RtmChannelDetails,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
         lock.remove(
             channelName, channelType: channelType,
             lockName: lockName
         ) { resp, error in
-            guard let completion = completion else { return }
-            guard let resp else {
-                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -108,7 +98,7 @@ public class RtmLock {
         named lockName: String,
         fromChannel channel: RtmChannelDetails,
         retry: Bool = false,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
         lock.acquireLock(
@@ -116,12 +106,7 @@ public class RtmLock {
             lockName: lockName,
             retry: retry
         ) { resp, error in
-            guard let completion = completion else { return }
-            guard let resp else {
-                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -133,19 +118,14 @@ public class RtmLock {
     public func releaseLock(
         named lockName: String,
         fromChannel channel: RtmChannelDetails,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
         lock.release(
             channelName, channelType: channelType,
             lockName: lockName
         ) { resp, error in
-            guard let completion = completion else { return }
-            guard let resp else {
-                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -159,7 +139,7 @@ public class RtmLock {
         named lockName: String,
         fromChannel channel: RtmChannelDetails,
         userId: String,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
         lock.revokeLock(
@@ -167,12 +147,7 @@ public class RtmLock {
             lockName: lockName,
             userId: userId
         ) { resp, error in
-            guard let completion = completion else { return }
-            guard let resp else {
-                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(resp)))
+            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -182,15 +157,11 @@ public class RtmLock {
     ///   - completion: A completion block that will be called with the result.
     public func getLocks(
         forChannel channel: RtmChannelDetails,
-        completion: @escaping (Result<RtmGetLocksResponse, Error>) -> Void
+        completion: @escaping (Result<RtmGetLocksResponse, RtmErrorInfo>) -> Void
     ) {
         let (channelName, channelType) = channel.objcVersion
-        lock.getLocks(channelName, channelType: channelType) { locks, error in
-            guard let locks else {
-                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
-                return
-            }
-            completion(.success(.init(locks)))
+        lock.getLocks(channelName, channelType: channelType) { locks, err in
+            RtmClientKit.handleCompletion((locks, err), completion: completion, operation: #function)
         }
     }
 }
