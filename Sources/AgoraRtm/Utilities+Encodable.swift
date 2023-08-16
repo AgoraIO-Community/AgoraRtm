@@ -27,7 +27,7 @@ internal extension Encodable {
         let msg = try JSONEncoder().encode(self)
 
         guard let jsonString = String(data: msg, encoding: .utf8) else {
-            throw RtmBaseErrorInfo(
+            throw RtmErrorInfo(
                 errorCode: .channelInvalidMessage, operation: #function,
                 reason: "message could not convert to JSON String"
             )

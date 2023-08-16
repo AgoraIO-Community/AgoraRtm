@@ -24,7 +24,7 @@ After creating an ``RtmStreamChannel`` instance, use the ``RtmStreamChannel/join
 do {
     let joinOptions = RtmJoinChannelOption(token: "agora-token", features = .presence)
     _ = try await streamChannel.join(with: options)
-} catch let err as RtmBaseErrorInfo {
+} catch let err as RtmErrorInfo {
     print("join failed, errorCode \(err.errorCode), reason \(err.reason)")
 }
 ```

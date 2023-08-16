@@ -76,22 +76,18 @@ public class RtmPresence {
     /// - Parameters:
     ///   - channel: The type and name of the channel.
     ///   - options: The query option. Default is nil.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhoNowResponse, RtmBaseErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhoNowResponse, RtmErrorInfo>`.
     public func fetchOnlineUsers(
         inChannel channel: RtmChannelDetails,
         options: RtmPresenceOptions? = nil,
-        completion: @escaping (Result<RtmOnlineUsersResponse, RtmBaseErrorInfo>) -> Void
+        completion: @escaping (Result<RtmOnlineUsersResponse, RtmErrorInfo>) -> Void
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.whoNow(
             channelName, channelType: channelType,
             options: options?.objcVersion
-        ) { response, error in
-            if let response = response {
-                completion(.success(.init(response)))
-                return
-            }
-            completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+        ) { response, err in
+            RtmClientKit.handleCompletion((response, err), completion: completion, operation: #function)
         }
     }
 
@@ -99,31 +95,27 @@ public class RtmPresence {
     public func whoNow(
         inChannel channel: RtmChannelDetails,
         options: RtmPresenceOptions? = nil,
-        completion: @escaping (Result<RtmOnlineUsersResponse, RtmBaseErrorInfo>) -> Void
+        completion: @escaping (Result<RtmOnlineUsersResponse, RtmErrorInfo>) -> Void
     ) { self.fetchOnlineUsers(inChannel: channel, options: options, completion: completion) }
 
     /// Queries which channels the specified user has joined.
     ///
     /// - Parameters:
     ///   - userId: The ID of the user.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhereNowResponse, RtmBaseErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result, `Result<RtmWhereNowResponse, RtmErrorInfo>`.
     public func fetchUserChannels(
         userId: String,
-        completion: @escaping (Result<RtmUserChannelsResponse, RtmBaseErrorInfo>) -> Void
+        completion: @escaping (Result<RtmUserChannelsResponse, RtmErrorInfo>) -> Void
     ) {
-        presence.whereNow(userId) { response, error in
-            if let response = response {
-                completion(.success(.init(response)))
-                return
-            }
-            completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+        presence.whereNow(userId) { response, err in
+            RtmClientKit.handleCompletion((response, err), completion: completion, operation: #function)
         }
     }
 
     @available(*, deprecated, renamed: "fetchUserChannels(userId:completion:)")
     public func whereNow(
         userId: String,
-        completion: @escaping (Result<RtmUserChannelsResponse, RtmBaseErrorInfo>) -> Void
+        completion: @escaping (Result<RtmUserChannelsResponse, RtmErrorInfo>) -> Void
     ) { self.fetchUserChannels(userId: userId, completion: completion) }
 
     /// Sets the local user's state within a specified channel.
@@ -139,7 +131,7 @@ public class RtmPresence {
     public func setUserState(
         inChannel channel: RtmChannelDetails,
         to state: [String: String],
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.setState(
@@ -150,13 +142,8 @@ public class RtmPresence {
                 stateItem.value = $0.value
                 return stateItem
             },
-            completion: { response, error in
-                guard let completion else { return }
-                if let response = response {
-                    completion(.success(.init(response)))
-                    return
-                }
-                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+            completion: { resp, err in
+                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
             })
     }
 
@@ -171,19 +158,14 @@ public class RtmPresence {
     public func removeUserState(
         fromChannel channel: RtmChannelDetails,
         keys: [String],
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.removeState(
             channelName, channelType: channelType,
             items: keys
-        ) { response, error in
-            guard let completion else { return }
-            if let response = response {
-                completion(.success(.init(response)))
-                return
-            }
-            completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+        ) { resp, error in
+            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -192,21 +174,17 @@ public class RtmPresence {
     /// - Parameters:
     ///   - userId: The ID of the user.
     ///   - channel: The type and name of the channel.
-    ///   - completion: The completion handler to be called with the operation result, `Result<RtmPresenceGetStateResponse, RtmBaseErrorInfo>`.
+    ///   - completion: The completion handler to be called with the operation result, `Result<RtmPresenceGetStateResponse, RtmErrorInfo>`.
     public func getState(
         ofUser userId: String,
         fromChannel channel: RtmChannelDetails,
-        completion: @escaping (Result<RtmPresenceGetStateResponse, RtmBaseErrorInfo>) -> Void
+        completion: @escaping (Result<RtmPresenceGetStateResponse, RtmErrorInfo>) -> Void
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.getState(
             channelName, channelType: channelType,
-            userId: userId) { response, error in
-                if let response = response {
-                    completion(.success(.init(response)))
-                    return
-                }
-                completion(.failure(RtmBaseErrorInfo(from: error) ?? .noKnownError(operation: #function)))
+            userId: userId) { response, err in
+                RtmClientKit.handleCompletion((response, err), completion: completion, operation: #function)
             }
     }
 }

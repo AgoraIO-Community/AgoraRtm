@@ -29,19 +29,13 @@ open class RtmStreamChannel: NSObject {
     /// - Parameters:
     ///   - option: The ``RtmJoinChannelOption`` to use for joining the channel.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful ``RtmCommonResponse`` or an error of type `RtmBaseErrorInfo`.
+    ///                 The result will contain either a successful ``RtmCommonResponse`` or an error of type `RtmErrorInfo`.
     public func join(
         with option: RtmJoinChannelOption,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.join(with: option.objcVersion) { resp, errInfo in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
-                    .noKnownError(operation: #function)))
-//                return completion(.failure(JoinErrorInfo(from: errInfo) ?? .noKnownError))
-            }
-            completion(.success(.init(resp)))
+        channel.join(with: option.objcVersion) { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -51,45 +45,34 @@ open class RtmStreamChannel: NSObject {
     ///
     /// - Parameter option: The configuration options for joining the channel, encapsulated in an ``RtmJoinChannelOption`` object.
     ///
-    /// - Throws: ``RtmBaseErrorInfo`` if an error occurs during the join attempt.
+    /// - Throws: ``RtmErrorInfo`` if an error occurs during the join attempt.
     ///
     /// - Returns: A response confirming the result of the join attempt, encapsulated in an ``RtmCommonResponse`` object.
     @available(iOS 13.0.0, *)
     public func join(
         with option: RtmJoinChannelOption
     ) async throws -> RtmCommonResponse {
-        let (resp, err) = await channel.join(with: option.objcVersion)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(
+            await channel.join(with: option.objcVersion), operation: #function
+        )
     }
 
 
     /// Leaves the stream channel.
     ///
     /// - Parameter completion: An optional completion block that will be called with the result of the operation.
-    ///                         The result will contain either a successful ``RtmCommonResponse`` or an error of type ``RtmBaseErrorInfo``.
+    ///                         The result will contain either a successful ``RtmCommonResponse`` or an error of type ``RtmErrorInfo``.
     public func leave(
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.leave { resp, errInfo in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
-                    .noKnownError(operation: #function)))
-            }
-            completion(.success(.init(resp)))
+        channel.leave { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         }
     }
 
     @available(iOS 13.0.0, *)
     public func leave() async throws -> RtmCommonResponse {
-        let (resp, err) = await channel.leave()
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(await channel.leave(), operation: #function)
     }
 
 
@@ -98,28 +81,19 @@ open class RtmStreamChannel: NSObject {
     /// - Parameters:
     ///   - token: The new token to renew.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful ``RtmCommonResponse`` or an error of type `RtmBaseErrorInfo`.
+    ///                 The result will contain either a successful ``RtmCommonResponse`` or an error of type `RtmErrorInfo`.
     public func renewToken(
         _ token: String,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.renewToken(token, completion: { resp, errInfo in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
-                    .noKnownError(operation: #function)))
-            }
-            completion(.success(.init(resp)))
+        channel.renewToken(token, completion: { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         })
     }
 
     @available(iOS 13.0.0, *)
     public func renewToken(_ token: String) async throws -> RtmCommonResponse {
-        let (resp, err) = await channel.renewToken(token)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(await channel.renewToken(token), operation: #function)
     }
 
     /// Joins the stream channel with the provided ``RtmJoinChannelOption``.
@@ -128,18 +102,13 @@ open class RtmStreamChannel: NSObject {
     ///   - topic: The name of the stream channel to join.
     ///   - option: The ``RtmJoinTopicOption`` to use for joining the channel.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful `RtmCommonResponse` or an error of type `RtmBaseErrorInfo`.
+    ///                 The result will contain either a successful `RtmCommonResponse` or an error of type `RtmErrorInfo`.
     public func joinTopic(
         _ topic: String, with option: RtmJoinTopicOption?,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.joinTopic(topic, with: option?.objcVersion, completion:  { resp, errInfo in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
-                    .noKnownError(operation: #function)))
-            }
-            completion(.success(.init(resp)))
+        channel.joinTopic(topic, with: option?.objcVersion, completion:  { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         })
     }
 
@@ -149,16 +118,15 @@ open class RtmStreamChannel: NSObject {
     ///   - topic: The name of the stream channel to join.
     ///   - option: The ``RtmJoinTopicOption`` to use for joining the channel.
     /// - Returns: A ``RtmCommonResponse`` object representing the result of the operation.
-    /// - Throws: An error of type ``RtmBaseErrorInfo`` if the operation fails.
+    /// - Throws: An error of type ``RtmErrorInfo`` if the operation fails.
     @discardableResult @available(iOS 13.0.0, *)
     public func joinTopic(
         _ topic: String, with option: RtmJoinTopicOption?
     ) async throws -> RtmCommonResponse {
-        let (resp, err) = await channel.joinTopic(topic, with: option?.objcVersion)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(
+            await channel.joinTopic(topic, with: option?.objcVersion),
+            operation: #function
+        )
     }
 
     /// Leaves the stream channel.
@@ -167,18 +135,13 @@ open class RtmStreamChannel: NSObject {
     ///   - topic: The name of the stream channel to leave.
     ///   - completion: An optional completion block that will be called with the result of the operation.
     ///                 The result will contain either a successful ``RtmCommonResponse``
-    ///                 or an error of type ``RtmBaseErrorInfo``.
+    ///                 or an error of type ``RtmErrorInfo``.
     public func leaveTopic(
         _ topic: String,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.leaveTopic(topic, completion: { resp, errInfo in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
-                    .noKnownError(operation: #function)))
-            }
-            completion(.success(.init(resp)))
+        channel.leaveTopic(topic, completion: { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         })
     }
 
@@ -186,16 +149,12 @@ open class RtmStreamChannel: NSObject {
     ///
     /// - Parameter topic: The name of the stream channel to leave.
     /// - Returns: A ``RtmCommonResponse`` object representing the result of the operation.
-    /// - Throws: An error of type ``RtmBaseErrorInfo`` if the operation fails.
+    /// - Throws: An error of type ``RtmErrorInfo`` if the operation fails.
     @discardableResult @available(iOS 13.0.0, *)
     public func leaveTopic(
         _ topic: String
     ) async throws -> RtmCommonResponse {
-        let (resp, err) = await channel.leaveTopic(topic)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(await channel.leaveTopic(topic), operation: #function)
     }
 
     /// Subscribes to messages from specified users within a topic.
@@ -207,17 +166,13 @@ open class RtmStreamChannel: NSObject {
     ///   - options: Subscription options using ``RtmTopicOption``, including users to subscribe to.
     ///              Use `nil` to subscribe to all.
     ///   - completion: An optional completion handler that returns either a successful response
-    ///                 (``RtmTopicSubscriptionResponse``) or an error (``RtmBaseErrorInfo``). Defaults to nil.
+    ///                 (``RtmTopicSubscriptionResponse``) or an error (``RtmErrorInfo``). Defaults to nil.
     public func subscribe(
         toTopic topic: String, withOptions options: RtmTopicOption? = nil,
-        completion: ((Result<RtmTopicSubscriptionResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmTopicSubscriptionResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.subscribeTopic(topic, with: options?.objcVersion, completion: { resp, errInfo in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-            }
-            completion(.success(.init(resp)))
+        channel.subscribeTopic(topic, with: options?.objcVersion, completion: { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         })
     }
 
@@ -230,16 +185,15 @@ open class RtmStreamChannel: NSObject {
     ///
     /// - Returns:
     ///   A result that either provides a successful response ``RtmTopicSubscriptionResponse``
-    ///   or throws an error ``RtmBaseErrorInfo``.
+    ///   or throws an error ``RtmErrorInfo``.
     @discardableResult @available(iOS 13.0.0, *)
     public func subscribe(
         toTopic topic: String, withOptions options: RtmTopicOption? = nil
     ) async throws -> RtmTopicSubscriptionResponse {
-        let (resp, err) = await channel.subscribeTopic(topic, with: options?.objcVersion)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(
+            await channel.subscribeTopic(topic, with: options?.objcVersion),
+            operation: #function
+        )
     }
 
     /// Unsubscribes from specified users' messages within a topic.
@@ -251,17 +205,13 @@ open class RtmStreamChannel: NSObject {
     ///   - options: Subscription options using ``RtmTopicOption``, including users to unsubscribe to.
     ///              Use `nil` to unsubscribe to all.
     ///   - completion: An optional completion handler that returns either a successful response ``RtmCommonResponse``
-    ///                 or an error ``RtmBaseErrorInfo``.
+    ///                 or an error ``RtmErrorInfo``.
     public func unsubscribe(
         fromTopic topic: String, withOptions options: RtmTopicOption? = nil,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.unsubscribeTopic(topic, with: options?.objcVersion, completion: { resp, errInfo in
-            guard let completion = completion else { return }
-            guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ?? .noKnownError(operation: #function)))
-            }
-            completion(.success(.init(resp)))
+        channel.unsubscribeTopic(topic, with: options?.objcVersion, completion: { resp, err in
+            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
         })
     }
 
@@ -274,16 +224,15 @@ open class RtmStreamChannel: NSObject {
     ///
     /// - Returns:
     ///   A result that either provides a successful response ``RtmCommonResponse``
-    ///   or throws an error ``RtmBaseErrorInfo``.
+    ///   or throws an error ``RtmErrorInfo``.
     @discardableResult @available(iOS 13.0.0, *)
     public func unsubscribe(
         fromTopic topic: String, withOptions options: RtmTopicOption? = nil
     ) async throws -> RtmCommonResponse {
-        let (resp, err) = await channel.unsubscribeTopic(topic, with: options?.objcVersion)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(
+            await channel.unsubscribeTopic(topic, with: options?.objcVersion),
+            operation: #function
+        )
     }
 
     /// Publishes a message to a specified topic asynchronously.
@@ -292,19 +241,19 @@ open class RtmStreamChannel: NSObject {
     ///   - message: The message to be published. Must be `Codable`.
     ///   - topic: The name of the topic to which the message will be published.
     ///   - options: Optional configurations for publishing the message. Defaults to `nil`.
-    ///   - completion: A completion block that returns a result containing an ``RtmCommonResponse`` or ``RtmBaseErrorInfo``.
+    ///   - completion: A completion block that returns a result containing an ``RtmCommonResponse`` or ``RtmErrorInfo``.
     public func publishTopicMessage(
         _ message: Codable, in topic: String, with options: RtmPublishOptions?,
-        completion: ((Result<RtmCommonResponse, RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let msgString: String
         do {
             msgString = try message.convertToString()
-        } catch let error as RtmBaseErrorInfo {
+        } catch let error as RtmErrorInfo {
             completion?(.failure(error))
             return
         } catch {
-            completion?(.failure(RtmBaseErrorInfo(
+            completion?(.failure(RtmErrorInfo(
                 errorCode: .channelInvalidMessage, operation: #function,
                 reason: "could not encode message: \(error.localizedDescription)"
             )))
@@ -313,13 +262,8 @@ open class RtmStreamChannel: NSObject {
         channel.publishTopicMessage(
             msgString as NSString, inTopic: topic,
             withOption: options?.objcVersion,
-            completion: { resp, errInfo in
-                guard let completion = completion else { return }
-                guard let resp = resp else {
-                    return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
-                        .noKnownError(operation: #function)))
-                }
-                completion(.success(.init(resp)))
+            completion: { resp, err in
+                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
             }
         )
     }
@@ -335,7 +279,7 @@ open class RtmStreamChannel: NSObject {
     ///
     /// - Returns: An ``RtmCommonResponse`` containing information about the published message.
     ///
-    /// - Throws: ``RtmBaseErrorInfo`` if an error occurs during the publishing process.
+    /// - Throws: ``RtmErrorInfo`` if an error occurs during the publishing process.
     @discardableResult @available(iOS 13.0.0, *)
     public func publishTopicMessage(
         message: Codable,
@@ -344,21 +288,17 @@ open class RtmStreamChannel: NSObject {
         let msgString: String
         do {
             msgString = try message.convertToString()
-        } catch let error as RtmBaseErrorInfo {
+        } catch let error as RtmErrorInfo {
             throw error
         } catch {
-            throw RtmBaseErrorInfo(
+            throw RtmErrorInfo(
                 errorCode: .channelInvalidMessage, operation: #function,
                 reason: "could not encode message: \(error.localizedDescription)"
             )
         }
-        let (resp, err) = await channel.publishTopicMessage(
+        return try RtmClientKit.handleCompletion(await channel.publishTopicMessage(
             msgString as NSString, inTopic: topic, withOption: options?.objcVersion
-        )
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        ), operation: #function)
     }
 
     /// Retrieves the list of subscribed users from a stream channel.
@@ -366,16 +306,16 @@ open class RtmStreamChannel: NSObject {
     /// - Parameters:
     ///   - topic: The name of the stream channel to retrieve the list of subscribed users from.
     ///   - completion: An optional completion block that will be called with the result of the operation.
-    ///                 The result will contain either a successful array of user IDs or an error of type ``RtmBaseErrorInfo``.
+    ///                 The result will contain either a successful array of user IDs or an error of type ``RtmErrorInfo``.
     public func getSubscribedUserList(
         forTopic topic: String,
-        completion: ((Result<[String], RtmBaseErrorInfo>) -> Void)? = nil
+        completion: ((Result<[String], RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.getSubscribedUserList(topic, completion: { resp, errInfo in
+        channel.getSubscribedUserList(topic, completion: { resp, err in
             guard let completion = completion else { return }
+            if let err = RtmErrorInfo(from: err) { return completion(.failure(err)) }
             guard let resp = resp else {
-                return completion(.failure(RtmBaseErrorInfo(from: errInfo) ??
-                    .noKnownError(operation: #function)))
+                return completion(.failure(RtmErrorInfo.noKnownError(operation: #function)))
             }
             completion(.success(resp.users))
         })
@@ -385,22 +325,21 @@ open class RtmStreamChannel: NSObject {
     ///
     /// - Parameter topic: The name of the stream channel to retrieve the list of subscribed users from.
     /// - Returns: An array of user IDs representing the list of subscribed users.
-    /// - Throws: An error of type ``RtmBaseErrorInfo`` if the operation fails.
+    /// - Throws: An error of type ``RtmErrorInfo`` if the operation fails.
     @available(iOS 13.0.0, *)
     public func getSubscribedUserList(
         forTopic topic: String
     ) async throws -> [String] {
         let (resp, err) = await channel.subscribedUserList(topic)
-        guard let resp = resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
+        if let err = RtmErrorInfo(from: err) { throw err }
+        guard let resp = resp else { throw RtmErrorInfo.noKnownError(operation: #function) }
         return resp.users
     }
 
     /// Destroys the stream channel.
     ///
     /// - Returns: The error code associated with the destruction of the channel, or `nil` if the destruction is successful.
-    func destroy() -> RtmBaseErrorCode? {
+    func destroy() -> RtmErrorCode? {
         let destroyCode = channel.destroy()
         if destroyCode == .ok { return nil }
         return .init(rawValue: destroyCode.rawValue)

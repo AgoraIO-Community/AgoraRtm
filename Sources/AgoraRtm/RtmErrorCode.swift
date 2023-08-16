@@ -1,5 +1,5 @@
 //
-//  SignalingErrorCode.swift
+//  RtmErrorCode.swift
 //  
 //
 //  Created by Max Cobb on 07/08/2023.
@@ -28,9 +28,9 @@ extension RtmError {
 }
 
 /// A base error information struct that implements the `RtmError` protocol, providing error details for the Agora RTM SDK.
-public struct RtmBaseErrorInfo: RtmError {
+public struct RtmErrorInfo: RtmError {
     /// The error code associated with the error.
-    public let errorCode: RtmBaseErrorCode
+    public let errorCode: RtmErrorCode
 
     /// The raw error code value received from the SDK.
     public let rawErrorCode: Int
@@ -41,14 +41,14 @@ public struct RtmBaseErrorInfo: RtmError {
     /// The reason or description of the error.
     public let reason: String
 
-    /// Create an `RtmBaseErrorInfo` instance with the specified error code, operation name, and reason.
+    /// Create an `RtmErrorInfo` instance with the specified error code, operation name, and reason.
     ///
     /// - Parameters:
     ///   - errorCode: The error code to associate with the error.
     ///   - operation: The name of the operation where the error occurred.
     ///   - reason: The reason or description of the error.
     internal init(errorCode: Int, operation: String, reason: String) {
-        self.errorCode = RtmBaseErrorCode(rawValue: errorCode) ?? .unknown
+        self.errorCode = RtmErrorCode(rawValue: errorCode) ?? .unknown
         self.operation = operation
         self.reason = reason
         self.rawErrorCode = errorCode
@@ -58,22 +58,22 @@ public struct RtmBaseErrorInfo: RtmError {
         }
     }
 
-    /// Create an `RtmBaseErrorInfo` instance with the specified error code, operation name, and reason.
+    /// Create an `RtmErrorInfo` instance with the specified error code, operation name, and reason.
     ///
     /// - Parameters:
-    ///   - errorCode: The `RtmBaseErrorCode` to associate with the error.
+    ///   - errorCode: The ``RtmErrorCode`` to associate with the error.
     ///   - operation: The name of the operation where the error occurred.
     ///   - reason: The reason or description of the error.
-    internal init(errorCode: RtmBaseErrorCode, operation: String, reason: String) {
+    internal init(errorCode: RtmErrorCode, operation: String, reason: String) {
         self.init(errorCode: errorCode.rawValue, operation: operation, reason: reason)
     }
 
-    /// Create an `RtmBaseErrorInfo` instance for cases where there is no known error, but the RTM SDK returned no valid response.
+    /// Create an `RtmErrorInfo` instance for cases where there is no known error, but the RTM SDK returned no valid response.
     ///
     /// - Parameter operation: The name of the function where the event occurred.
-    /// - Returns: A new `RtmBaseErrorInfo` object with the error code set to `-1`.
-    internal static func noKnownError(operation: String) -> RtmBaseErrorInfo {
-        RtmBaseErrorInfo(
+    /// - Returns: A new `RtmErrorInfo` object with the error code set to `-1`.
+    internal static func noKnownError(operation: String) -> RtmErrorInfo {
+        RtmErrorInfo(
             errorCode: -1,
             operation: operation,
             reason: "\(operation) did not fail or return a response"
@@ -81,7 +81,8 @@ public struct RtmBaseErrorInfo: RtmError {
     }
 }
 
-public enum RtmBaseErrorCode: Int, ErrorCode {
+public enum RtmErrorCode: Int, ErrorCode {
+    // `ok` is not a valid error, absence of an error indicates no error.
 //    case ok = 0
     case unknown = -1
     case notInitialized = -10001
@@ -177,7 +178,7 @@ public enum RtmBaseErrorCode: Int, ErrorCode {
     case lockNotAvailable = -14009
 }
 
-internal extension RtmClientKit {
+private extension RtmClientKit {
     struct RtmLoginErrorInfo: RtmError {
         let errorCode: LoginErrorCode
         let rawErrorCode: Int

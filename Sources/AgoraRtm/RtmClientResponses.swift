@@ -7,17 +7,24 @@
 
 import AgoraRtmKit
 
-public class RtmCommonResponse {
-    // You can add properties if needed, but this class doesn't have any specific properties in the Objective-C counterpart.
-    private let response: AgoraRtmCommonResponse
+internal protocol RtmResponseProtocol {
+    associatedtype ResponseType
 
-    init(_ response: AgoraRtmCommonResponse) {
+    var response: ResponseType { get }
+    init(_ response: ResponseType)
+}
+
+public class RtmCommonResponse: RtmResponseProtocol {
+    // You can add properties if needed, but this class doesn't have any specific properties in the Objective-C counterpart.
+    internal let response: AgoraRtmCommonResponse
+
+    required internal init(_ response: AgoraRtmCommonResponse) {
         self.response = response
     }
 }
 
-public class RtmTopicSubscriptionResponse {
-    private let response: AgoraRtmTopicSubscriptionResponse
+public class RtmTopicSubscriptionResponse: RtmResponseProtocol {
+    internal let response: AgoraRtmTopicSubscriptionResponse
 
     public var succeedUsers: [String] {
         return response.succeedUsers
@@ -27,7 +34,7 @@ public class RtmTopicSubscriptionResponse {
         return response.failedUsers
     }
 
-    init(_ response: AgoraRtmTopicSubscriptionResponse) {
+    required internal init(_ response: AgoraRtmTopicSubscriptionResponse) {
         self.response = response
     }
 }
@@ -121,32 +128,32 @@ public class RtmMetadata {
     }
 }
 
-public class RtmGetMetadataResponse {
-    private let response: AgoraRtmGetMetadataResponse
+public class RtmGetMetadataResponse: RtmResponseProtocol {
+    internal let response: AgoraRtmGetMetadataResponse
 
     public var data: RtmMetadata? {
         return .init(response.data)
     }
 
-    init(_ response: AgoraRtmGetMetadataResponse) {
+    required init(_ response: AgoraRtmGetMetadataResponse) {
         self.response = response
     }
 }
 
-public class RtmGetLocksResponse {
-    private let response: AgoraRtmGetLocksResponse
+public class RtmGetLocksResponse: RtmResponseProtocol {
+    internal let response: AgoraRtmGetLocksResponse
 
     public lazy var lockDetailList: [RtmLockDetail] = {
         return response.lockDetailList.map { .init($0) }
     }()
 
-    init(_ response: AgoraRtmGetLocksResponse) {
+    required internal init(_ response: AgoraRtmGetLocksResponse) {
         self.response = response
     }
 }
 
-public class RtmOnlineUsersResponse {
-    private let response: AgoraRtmWhoNowResponse
+public class RtmOnlineUsersResponse: RtmResponseProtocol {
+    internal let response: AgoraRtmWhoNowResponse
 
     public var totalOccupancy: Int32 {
         return response.totalOccupancy
@@ -166,7 +173,7 @@ public class RtmOnlineUsersResponse {
         return response.nextPage
     }
 
-    init(_ response: AgoraRtmWhoNowResponse) {
+    required internal init(_ response: AgoraRtmWhoNowResponse) {
         self.response = response
     }
 }
@@ -175,8 +182,8 @@ public class RtmOnlineUsersResponse {
 public typealias RtmWhoNowResponse = RtmOnlineUsersResponse
 
 
-public class RtmUserChannelsResponse {
-    private let response: AgoraRtmWhereNowResponse
+public class RtmUserChannelsResponse: RtmResponseProtocol {
+    internal let response: AgoraRtmWhereNowResponse
 
     public var totalChannel: Int32 {
         return response.totalChannel
@@ -186,7 +193,7 @@ public class RtmUserChannelsResponse {
         return response.channels.map { .init($0) }
     }()
 
-    internal init(_ response: AgoraRtmWhereNowResponse) {
+    required internal init(_ response: AgoraRtmWhereNowResponse) {
         self.response = response
     }
 }
@@ -194,8 +201,8 @@ public class RtmUserChannelsResponse {
 @available(*, deprecated, renamed: "RtmUserChannelsResponse")
 public typealias RtmWhereNowResponse = RtmUserChannelsResponse
 
-public class RtmPresenceGetStateResponse {
-    private let response: AgoraRtmPresenceGetStateResponse
+public class RtmPresenceGetStateResponse: RtmResponseProtocol {
+    internal let response: AgoraRtmPresenceGetStateResponse
 
     public var states: [String: String] {
         return response.state.states.reduce(into: [String: String]()) { result, keyValue in
@@ -203,7 +210,7 @@ public class RtmPresenceGetStateResponse {
         }
     }
 
-    init(_ response: AgoraRtmPresenceGetStateResponse) {
+    required internal init(_ response: AgoraRtmPresenceGetStateResponse) {
         self.response = response
     }
 }

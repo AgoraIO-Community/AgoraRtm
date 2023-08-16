@@ -27,7 +27,7 @@ After successfully joining a Topic, the SDK triggers an ``RtmClientDelegate/rtmC
 ```swift
 do {
     _ = try await streamChannel.joinTopic("Basketball", with: nil)
-} catch let err as RtmBaseErrorInfo {
+} catch let err as RtmErrorInfo {
     print("\(err.operation) failed, errorCode \(err.errorCode), reason \(err.reason)")
 }
 ```
@@ -43,7 +43,7 @@ If you no longer want to send messages within a topic or exceed the limit for si
 ```swift
 do {
     _ = try await streamChannel.leave()
-} catch let err as RtmBaseErrorInfo {
+} catch let err as RtmErrorInfo {
     print("leave topic failed, errorCode \(err.errorCode), reason \(err.reason)")
 }
 ```
@@ -64,7 +64,7 @@ do {
         toTopic: "Basketball",
         withOptions: RtmTopicOption(users: ["user-1", "user-2"])
     )
-} catch let err as RtmBaseErrorInfo {
+} catch let err as RtmErrorInfo {
     print("subscription failed, errorCode \(err.errorCode), reason \(err.reason)")
 }
 ```
@@ -87,7 +87,7 @@ do {
         fromTopic: "Basketball",
         withOptions: RtmTopicOption(users: ["user-1", "user-2"])
     )
-} catch let err as RtmBaseErrorInfo {
+} catch let err as RtmErrorInfo {
     print("unsubscribe failed, errorCode \(err.errorCode), reason \(err.reason)")
 }
 ```

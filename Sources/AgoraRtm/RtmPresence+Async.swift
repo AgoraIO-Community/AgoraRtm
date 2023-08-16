@@ -20,14 +20,10 @@ public extension RtmPresence {
         in channel: RtmChannelDetails, options: RtmPresenceOptions? = nil
     ) async throws -> RtmOnlineUsersResponse {
         let (channelName, channelType) = channel.objcVersion
-        let (resp, err) = await self.presence.whoNow(
+        return try RtmClientKit.handleCompletion(await self.presence.whoNow(
             channelName, channelType: channelType,
             options: options?.objcVersion
-        )
-        guard let resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        ), operation: #function)
     }
 
     /// Asynchronously queries which channels a user is currently in.
@@ -36,11 +32,7 @@ public extension RtmPresence {
     ///   - userId: The ID of the user.
     /// - Returns: A ``RtmWhereNowResponse`` object with either the query response.
     func fetchUserChannels(for userId: String) async throws -> RtmUserChannelsResponse {
-        let (resp, err) = await self.presence.whereNow(userId)
-        guard let resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        return try RtmClientKit.handleCompletion(await self.presence.whereNow(userId), operation: #function)
     }
 
     /// Asynchronously queries who is currently in a specified channel.
@@ -80,13 +72,13 @@ public extension RtmPresence {
     /// to join or subscribe, the state data is immediately activated, which can subsequently trigger relevant
     /// event notifications.
     ///
-    /// - Throws: An ``RtmBaseErrorInfo`` error if the state update operation encounters any problems.
+    /// - Throws: An ``RtmErrorInfo`` error if the state update operation encounters any problems.
     func setUserState(
         inChannel channel: RtmChannelDetails,
         to states: [String: String]
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        let (resp, err) = await self.presence.setState(
+        return try RtmClientKit.handleCompletion(await self.presence.setState(
             channelName, channelType: channelType,
             items: states.map {
                 let stateItem = AgoraRtmStateItem()
@@ -94,11 +86,7 @@ public extension RtmPresence {
                 stateItem.value = $0.value
                 return stateItem
             }
-        )
-        guard let resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        ), operation: #function)
     }
 
     /// Asynchronously removes specified state entries of the local user from a given channel.
@@ -113,14 +101,10 @@ public extension RtmPresence {
         keys: [String]
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        let (resp, err) = await self.presence.removeState(
+        return try RtmClientKit.handleCompletion(await self.presence.removeState(
             channelName, channelType: channelType,
             items: keys
-        )
-        guard let resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return .init(resp)
+        ), operation: #function)
     }
 
     /// Asynchronously gets user state for a specified user in a channel.
@@ -132,16 +116,12 @@ public extension RtmPresence {
     func getState(
         ofUser userId: String,
         inChannel channel: RtmChannelDetails
-    ) async throws -> [String: String] {
+    ) async throws -> RtmPresenceGetStateResponse {
         let (channelName, channelType) = channel.objcVersion
-        let (resp, err) = await self.presence.state(
+        return try RtmClientKit.handleCompletion(await self.presence.state(
             channelName, channelType: channelType,
             userId: userId
-        )
-        guard let resp else {
-            throw RtmBaseErrorInfo(from: err) ?? .noKnownError(operation: #function)
-        }
-        return RtmPresenceGetStateResponse(resp).states
+        ), operation: #function)
     }
 }
 
