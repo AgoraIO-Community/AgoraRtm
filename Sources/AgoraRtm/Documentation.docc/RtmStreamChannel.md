@@ -1,7 +1,5 @@
 # ``AgoraRtm/RtmStreamChannel``
 
-Join, interact, and manage event notifications within room-based channels in RTM.
-
 ## Overview
 
 Stream Channels are a type of channel in RTM based on the Room model. Unlike Message Channels, before using Stream Channel methods, you must first create an ``RtmStreamChannel`` instance. Once you've joined a Stream Channel, you can listen for event notifications within that channel. However, if you want to send or receive messages, you'll need to utilize the Topic feature (<doc:Channel-Topics>). RTM allows you to have thousands of Stream Channels in your app. However, due to client-side performance and bandwidth constraints, there's a limit to the number of channels a single client can join. For details on this limit, please refer to the API usage constraints.
