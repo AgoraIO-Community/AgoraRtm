@@ -7,8 +7,8 @@
 
 import AgoraRtmKit
 
-/// A class that wraps an `AgoraRtmStreamChannel`, providing convenient methods
-/// to interact with the channel in the Agora RTM SDK.
+/// A class providing convenient methods
+/// to interact with the stream channels in the Agora Signaling SDK.
 open class RtmStreamChannel: NSObject {
     private let channel: AgoraRtmStreamChannel
 

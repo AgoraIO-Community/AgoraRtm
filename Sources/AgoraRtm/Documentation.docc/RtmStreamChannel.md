@@ -1,5 +1,6 @@
-# Stream Channels
+# ``AgoraRtm/RtmStreamChannel``
 
+Join, interact, and manage event notifications within room-based channels in RTM.
 
 ## Overview
 
@@ -38,6 +39,18 @@ If you no longer need to receive notifications from a particular channel, you ca
 ```swift
 try? streamChannel.leave()
 ```
+
+- ``RtmStreamChannel/leave()``
+- ``RtmStreamChannel/leave(completion:)``
+
+## Topics
+
+### Joining a Channel
+
+- ``RtmStreamChannel/join(with:)``
+- ``RtmStreamChannel/join(with:completion:)``
+
+### Leaving a Channel
 
 - ``RtmStreamChannel/leave()``
 - ``RtmStreamChannel/leave(completion:)``

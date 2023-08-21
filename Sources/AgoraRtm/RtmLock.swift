@@ -9,15 +9,15 @@ import AgoraRtmKit
 
 public enum RtmChannelDetails {
     case none(String)
-    case message(String)
-    case stream(String)
+    case messageChannel(String)
+    case streamChannel(String)
     internal var objcVersion: (channelName: String, channelType: AgoraRtmChannelType) {
         switch self {
         case .none(let name):
             return (name, .none)
-        case .message(let name):
+        case .messageChannel(let name):
             return (name, .message)
-        case .stream(let name):
+        case .streamChannel(let name):
             return (name, .stream)
         }
     }
@@ -27,8 +27,8 @@ public enum RtmChannelDetails {
     ///   - agoraChannelInfo: The `AgoraRtmChannelInfo` instance.
     internal init(_ agoraChannelInfo: AgoraRtmChannelInfo) {
         switch agoraChannelInfo.channelType {
-        case .message: self = .message(agoraChannelInfo.channelName)
-        case .stream: self = .stream(agoraChannelInfo.channelName)
+        case .message: self = .messageChannel(agoraChannelInfo.channelName)
+        case .stream: self = .streamChannel(agoraChannelInfo.channelName)
         case .none: self = .none(agoraChannelInfo.channelName)
         @unknown default:
             self = .none(agoraChannelInfo.channelName)

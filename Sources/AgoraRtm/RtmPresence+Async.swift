@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  RtmPresence+Async.swift
 //  
 //
 //  Created by Max Cobb on 08/08/2023.
@@ -16,6 +16,17 @@ public extension RtmPresence {
     ///   - channel: The type and name of the channel.
     ///   - options: Options for the query, including what information to include in the result.
     /// - Returns: An ``RtmOnlineUsersResponse`` object with the currently online users and their states.
+    ///
+    /// Example usage:
+    /// ```swift
+    ///     guard let response = try? await presence.getOnlineUsers(
+    ///         in: .messageChannel("example"),
+    ///         options: RtmPresenceOptions(include: [.userId, .userState])
+    ///     ) else {
+    ///         print("request failed")
+    ///         return
+    ///     }
+    ///     print("\(response.totalOccupancy) users in channel")
     func getOnlineUsers(
         in channel: RtmChannelDetails, options: RtmPresenceOptions? = nil
     ) async throws -> RtmOnlineUsersResponse {
@@ -30,7 +41,8 @@ public extension RtmPresence {
     ///
     /// - Parameters:
     ///   - userId: The ID of the user.
-    /// - Returns: A ``RtmUserChannelsResponse`` object with either the query response.
+    /// - Returns: A ``RtmUserChannelsResponse`` object with either the query response,
+    ///            or an ``RtmErrorInfo``.
     func getUserChannels(for userId: String) async throws -> RtmUserChannelsResponse {
         return try RtmClientKit.handleCompletion(await self.presence.whereNow(userId), operation: #function)
     }

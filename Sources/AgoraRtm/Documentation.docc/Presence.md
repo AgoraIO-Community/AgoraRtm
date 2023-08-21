@@ -26,9 +26,9 @@ for channel in response.channels {
     switch channel {
     case .none(let name):
         print("Channel Name: \(name), Type: unknown")
-    case .message(let name):
+    case .messageChannel(let name):
         print("Channel Name: \(name), Type: message")
-    case .stream(let name):
+    case .streamChannel(let name):
         print("Channel Name: \(name), Type: stream")
     }
 }
@@ -97,7 +97,7 @@ The state remains active as long as the user stays online in the channel. Howeve
 do {
     let customStates: [String: String] = ["gameStatus": "playing", "mood": "happy"]
     let response = try await presence.setUserState(
-        inChannel: .message("channel-name"), to: customStates
+        inChannel: .messageChannel("channel-name"), to: customStates
     )
     print("setUserState succeeded!")
 } catch let error {
@@ -117,7 +117,7 @@ The ``RtmPresence/removeUserState(inChannel:keys:)`` method allows you to remove
 ```swift
 do {
     let removedResponse = try await presence.removeUserState(
-        inChannel: .message("channel-name"), keys: ["key1", "key2"]
+        inChannel: .messageChannel("channel-name"), keys: ["key1", "key2"]
     )
     print("User state(s) successfully removed!")
 } catch let error {
@@ -134,7 +134,7 @@ The ``RtmPresence/getState(ofUser:inChannel:)`` method provides a mechanism to r
 
 ```swift
 do {
-    let userStates = try await presence.getState(ofUser: "userId123", inChannel: .message("channel-name"))
+    let userStates = try await presence.getState(ofUser: "userId123", inChannel: .messageChannel("channel-name"))
     print("User states successfully fetched!")
     userStates.forEach { key, value in
         print("\t\(key): \(value)")

@@ -42,7 +42,7 @@ If you no longer want to send messages within a topic or exceed the limit for si
 
 ```swift
 do {
-    _ = try await streamChannel.leave()
+    _ = try await streamChannel.leaveTopic("Basketball")
 } catch let err as RtmErrorInfo {
     print("leave topic failed, errorCode \(err.errorCode), reason \(err.reason)")
 }

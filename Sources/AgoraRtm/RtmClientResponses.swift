@@ -100,7 +100,7 @@ public class RtmMetadata {
     /// Initializes an instance of `RtmMetadata` with an `AgoraRtmMetadata` object.
     ///
     /// - Parameter agoraMetadata: The `AgoraRtmMetadata` object to initialize from.
-    public init?(_ agoraMetadata: AgoraRtmMetadata?) {
+    internal init?(_ agoraMetadata: AgoraRtmMetadata?) {
         guard let agoraMetadata else { return nil }
         self.agoraMetadata = agoraMetadata
     }
@@ -127,21 +127,25 @@ public class RtmMetadata {
     }
 }
 
+/// Represents the response received from a metadata retrieval operation in Agora RTM.
 public class RtmGetMetadataResponse: RtmResponseProtocol {
     internal let response: AgoraRtmGetMetadataResponse
 
+    /// The metadata retrieved from the response.
     public var data: RtmMetadata? {
         return .init(response.data)
     }
 
-    required init(_ response: AgoraRtmGetMetadataResponse) {
+    required internal init(_ response: AgoraRtmGetMetadataResponse) {
         self.response = response
     }
 }
 
+/// Represents the response received from a locks retrieval operation in Agora RTM.
 public class RtmGetLocksResponse: RtmResponseProtocol {
     internal let response: AgoraRtmGetLocksResponse
 
+    /// The list of lock details retrieved from the response.
     public lazy var lockDetailList: [RtmLockDetail] = {
         return response.lockDetailList.map { .init($0) }
     }()
@@ -151,14 +155,17 @@ public class RtmGetLocksResponse: RtmResponseProtocol {
     }
 }
 
+/// Represents the response received from an online users retrieval operation in Agora RTM.
 public class RtmOnlineUsersResponse: RtmResponseProtocol {
     internal let response: AgoraRtmWhoNowResponse
 
+    /// The total count of online users, this may be larger than ``users`` count.
     public var totalOccupancy: Int32 {
         return response.totalOccupancy
     }
 
-    public var userStateList: [String: [String: String]] {
+    /// A dictionary containing user IDs and their corresponding state dictionaries.
+    public lazy var userStateList: [String: [String: String]] = {
         response.userStateList.reduce(into: [String: [String: String]]()) { result, userState in
             var stateDict = [String: String]()
             userState.states.forEach { keyValue in
@@ -166,8 +173,14 @@ public class RtmOnlineUsersResponse: RtmResponseProtocol {
             }
             result[userState.userId] = stateDict
         }
+    }()
+
+    /// An array containing the user IDs of online users.
+    public var users: [String] {
+        Array(userStateList.keys)
     }
 
+    /// The next page indicator for paginated responses.
     public var nextPage: String? {
         return response.nextPage
     }
@@ -181,13 +194,16 @@ public class RtmOnlineUsersResponse: RtmResponseProtocol {
 @available(*, deprecated, renamed: "RtmOnlineUsersResponse")
 public typealias RtmWhoNowResponse = RtmOnlineUsersResponse
 
+/// Represents the response received from a user's joined channel retrieval operation in Agora RTM.
 public class RtmUserChannelsResponse: RtmResponseProtocol {
     internal let response: AgoraRtmWhereNowResponse
 
-    public var totalChannel: Int32 {
+    /// The count of channels to which the user is subscribed.
+    public var subscribedChannelCount: Int32 {
         return response.totalChannel
     }
 
+    /// The list of channel details representing the user's subscribed channels.
     public lazy var channels: [RtmChannelDetails] = {
         return response.channels.map { .init($0) }
     }()
@@ -201,13 +217,20 @@ public class RtmUserChannelsResponse: RtmResponseProtocol {
 @available(*, deprecated, renamed: "RtmUserChannelsResponse")
 public typealias RtmWhereNowResponse = RtmUserChannelsResponse
 
+/// Represents the response received from a user's presence state retrieval operation in Agora RTM.
 public class RtmPresenceGetStateResponse: RtmResponseProtocol {
     internal let response: AgoraRtmPresenceGetStateResponse
 
+    /// The dictionary containing the presence states of the user.
     public var states: [String: String] {
         return response.state.states.reduce(into: [String: String]()) { result, keyValue in
             result[keyValue.key] = keyValue.value
         }
+    }
+
+    /// The user ID associated with the presence state.
+    public var userId: String {
+        return response.state.userId
     }
 
     required internal init(_ response: AgoraRtmPresenceGetStateResponse) {
