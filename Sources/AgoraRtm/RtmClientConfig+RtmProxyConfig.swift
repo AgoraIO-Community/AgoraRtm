@@ -30,14 +30,7 @@ import AgoraRtmKit
     @objc public init(
         proxyType: RtmProxyType, server: String, port: UInt16, account: String? = nil, password: String? = nil
     ) {
-        config = AgoraRtmProxyConfig()
-        if proxyType == .http {
-            config.proxyType = .http
-        } else {
-            config.proxyType = .none
-        }
-        config.server = server
-        config.port = port
+        config = AgoraRtmProxyConfig(server: server, port: port, proxyType: proxyType == .http ? .http : .none)
         config.account = account
         config.password = password
     }

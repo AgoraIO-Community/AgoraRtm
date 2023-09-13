@@ -13,7 +13,7 @@ open class RtmStreamChannel: NSObject {
     private let channel: AgoraRtmStreamChannel
 
     /// The name of the stream channel.
-    public var channelName: String { channel.getName() }
+    public var channelName: String { channel.getChannelName() }
 
     /// Initializes an ``RtmStreamChannel`` instance with the specified `AgoraRtmStreamChannel`.
     ///
@@ -36,8 +36,8 @@ open class RtmStreamChannel: NSObject {
         with option: RtmJoinChannelOption,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.join(with: option.objcVersion) { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+        channel.join(option.objcVersion) { resp, err in
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -57,8 +57,8 @@ open class RtmStreamChannel: NSObject {
     public func join(
         with option: RtmJoinChannelOption
     ) async throws -> RtmCommonResponse {
-        return try RtmClientKit.handleCompletion(
-            await channel.join(with: option.objcVersion), operation: #function
+        return try CompletionHandlers.handleAsyncThrow(
+            await channel.join(option.objcVersion), operation: #function
         )
     }
 
@@ -71,13 +71,13 @@ open class RtmStreamChannel: NSObject {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         channel.leave { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         }
     }
 
     @available(iOS 13.0.0, *)
     public func leave() async throws -> RtmCommonResponse {
-        return try RtmClientKit.handleCompletion(await channel.leave(), operation: #function)
+        return try CompletionHandlers.handleAsyncThrow(await channel.leave(), operation: #function)
     }
 
     /// Renews the token for the stream channel.
@@ -92,13 +92,13 @@ open class RtmStreamChannel: NSObject {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         channel.renewToken(token, completion: { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         })
     }
 
     @available(iOS 13.0.0, *)
     public func renewToken(_ token: String) async throws -> RtmCommonResponse {
-        return try RtmClientKit.handleCompletion(await channel.renewToken(token), operation: #function)
+        return try CompletionHandlers.handleAsyncThrow(await channel.renewToken(token), operation: #function)
     }
 
     /// Joins the stream channel with the provided ``RtmJoinChannelOption``.
@@ -113,8 +113,8 @@ open class RtmStreamChannel: NSObject {
         _ topic: String, with option: RtmJoinTopicOption?,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.joinTopic(topic, with: option?.objcVersion, completion: { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+        channel.joinTopic(topic, option: option?.objcVersion, completion: { resp, err in
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         })
     }
 
@@ -129,8 +129,8 @@ open class RtmStreamChannel: NSObject {
     public func joinTopic(
         _ topic: String, with option: RtmJoinTopicOption?
     ) async throws -> RtmCommonResponse {
-        return try RtmClientKit.handleCompletion(
-            await channel.joinTopic(topic, with: option?.objcVersion),
+        return try CompletionHandlers.handleAsyncThrow(
+            await channel.joinTopic(topic, option: option?.objcVersion),
             operation: #function
         )
     }
@@ -147,7 +147,7 @@ open class RtmStreamChannel: NSObject {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         channel.leaveTopic(topic, completion: { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         })
     }
 
@@ -160,7 +160,7 @@ open class RtmStreamChannel: NSObject {
     public func leaveTopic(
         _ topic: String
     ) async throws -> RtmCommonResponse {
-        return try RtmClientKit.handleCompletion(await channel.leaveTopic(topic), operation: #function)
+        return try CompletionHandlers.handleAsyncThrow(await channel.leaveTopic(topic), operation: #function)
     }
 
     /// Subscribes to messages from specified users within a topic.
@@ -177,8 +177,8 @@ open class RtmStreamChannel: NSObject {
         toTopic topic: String, withOptions options: RtmTopicOption? = nil,
         completion: ((Result<RtmTopicSubscriptionResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.subscribeTopic(topic, with: options?.objcVersion, completion: { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+        channel.subscribeTopic(topic, option: options?.objcVersion, completion: { resp, err in
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         })
     }
 
@@ -196,8 +196,8 @@ open class RtmStreamChannel: NSObject {
     public func subscribe(
         toTopic topic: String, withOptions options: RtmTopicOption? = nil
     ) async throws -> RtmTopicSubscriptionResponse {
-        return try RtmClientKit.handleCompletion(
-            await channel.subscribeTopic(topic, with: options?.objcVersion),
+        return try CompletionHandlers.handleAsyncThrow(
+            await channel.subscribeTopic(topic, option: options?.objcVersion),
             operation: #function
         )
     }
@@ -216,8 +216,8 @@ open class RtmStreamChannel: NSObject {
         fromTopic topic: String, withOptions options: RtmTopicOption? = nil,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        channel.unsubscribeTopic(topic, with: options?.objcVersion, completion: { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+        channel.unsubscribeTopic(topic, option: options?.objcVersion, completion: { resp, err in
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         })
     }
 
@@ -235,8 +235,8 @@ open class RtmStreamChannel: NSObject {
     public func unsubscribe(
         fromTopic topic: String, withOptions options: RtmTopicOption? = nil
     ) async throws -> RtmCommonResponse {
-        return try RtmClientKit.handleCompletion(
-            await channel.unsubscribeTopic(topic, with: options?.objcVersion),
+        return try CompletionHandlers.handleAsyncThrow(
+            await channel.unsubscribeTopic(topic, option: options?.objcVersion),
             operation: #function
         )
     }
@@ -267,10 +267,11 @@ open class RtmStreamChannel: NSObject {
             return
         }
         channel.publishTopicMessage(
-            msgString as NSString, inTopic: topic,
-            withOption: options?.objcVersion,
+            topic: topic,
+            message: msgString,
+            option: options?.objcVersion,
             completion: { resp, err in
-                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
             }
         )
     }
@@ -303,8 +304,8 @@ open class RtmStreamChannel: NSObject {
                 reason: "could not encode message: \(error.localizedDescription)"
             )
         }
-        return try RtmClientKit.handleCompletion(await channel.publishTopicMessage(
-            msgString as NSString, inTopic: topic, withOption: options?.objcVersion
+        return try CompletionHandlers.handleAsyncThrow(await channel.publishTopicMessage(
+            topic: topic, message: msgString, option: options?.objcVersion
         ), operation: #function)
     }
 
@@ -338,7 +339,7 @@ open class RtmStreamChannel: NSObject {
     public func getSubscribedUserList(
         forTopic topic: String
     ) async throws -> [String] {
-        let (resp, err) = await channel.subscribedUserList(topic)
+        let (resp, err) = await channel.getSubscribedUserList(topic)
         if let err = RtmErrorInfo(from: err) { throw err }
         guard let resp = resp else { throw RtmErrorInfo.noKnownError(operation: #function) }
         return resp.users

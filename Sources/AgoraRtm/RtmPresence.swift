@@ -21,8 +21,8 @@ public struct RtmPresenceOptions {
         self.page = page
     }
 
-    internal var objcVersion: AgoraRtmPresenceOptions {
-        let objcOpt = AgoraRtmPresenceOptions()
+    internal var objcVersion: AgoraRtmGetOnlineUsersOptions {
+        let objcOpt = AgoraRtmGetOnlineUsersOptions()
         objcOpt.includeUserId = self.include.contains(.userId)
         objcOpt.includeState = self.include.contains(.userState)
         objcOpt.page = self.page
@@ -83,11 +83,11 @@ public class RtmPresence {
         completion: @escaping (Result<RtmOnlineUsersResponse, RtmErrorInfo>) -> Void
     ) {
         let (channelName, channelType) = channel.objcVersion
-        presence.whoNow(
-            channelName, channelType: channelType,
+        presence.getOnlineUser(
+            channelName: channelName, channelType: channelType,
             options: options?.objcVersion
         ) { response, err in
-            RtmClientKit.handleCompletion((response, err), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((response, err), completion: completion, operation: #function)
         }
     }
 
@@ -109,8 +109,8 @@ public class RtmPresence {
         userId: String,
         completion: @escaping (Result<RtmUserChannelsResponse, RtmErrorInfo>) -> Void
     ) {
-        presence.whereNow(userId) { response, err in
-            RtmClientKit.handleCompletion((response, err), completion: completion, operation: #function)
+        presence.getUserChannels(userId: userId) { response, err in
+            CompletionHandlers.handleSyncResult((response, err), completion: completion, operation: #function)
         }
     }
 
@@ -138,7 +138,7 @@ public class RtmPresence {
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.setState(
-            channelName, channelType: channelType,
+            channelName: channelName, channelType: channelType,
             items: state.map {
                 let stateItem = AgoraRtmStateItem()
                 stateItem.key = $0.key
@@ -146,7 +146,7 @@ public class RtmPresence {
                 return stateItem
             },
             completion: { resp, err in
-                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
             })
     }
 
@@ -165,11 +165,10 @@ public class RtmPresence {
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.removeState(
-            channelName, channelType: channelType,
-            items: keys
-        ) { resp, error in
-            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
-        }
+            channelName: channelName, channelType: channelType,
+            keys: keys, completion: { resp, error in
+            CompletionHandlers.handleSyncResult((resp, error), completion: completion, operation: #function)
+        })
     }
 
     /// Gets the user's state.
@@ -186,9 +185,9 @@ public class RtmPresence {
     ) {
         let (channelName, channelType) = channel.objcVersion
         presence.getState(
-            channelName, channelType: channelType,
+            channelName: channelName, channelType: channelType,
             userId: userId) { response, err in
-                RtmClientKit.handleCompletion((response, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((response, err), completion: completion, operation: #function)
             }
     }
 }

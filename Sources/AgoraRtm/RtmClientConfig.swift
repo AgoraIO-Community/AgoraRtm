@@ -18,11 +18,10 @@ import AgoraRtmKit
     ///   - userId: The user ID for the RTM client.
     ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer.
     ///                      Default is `true`.
-    @objc public init(appId: String, userId: String, useStringUserId: Bool = true) {
-        config = AgoraRtmClientConfig()
-        config.appId = appId
+    @objc public init?(appId: String, userId: String, useStringUserId: Bool = true) {
+        let config = AgoraRtmClientConfig(appId: appId, userId: userId)
+        self.config = config
         config.useStringUserId = useStringUserId
-        config.userId = userId
     }
 
     /// Creates an instance of `RtmClientConfig` with the provided parameters.
@@ -32,17 +31,16 @@ import AgoraRtmKit
     ///   - userId: The user ID for the RTM client as an integer value.
     ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer.
     ///                      Default is `false`.
-    public init(appId: String, userId: Int, useStringUserId: Bool = false) {
-        config = AgoraRtmClientConfig()
-        config.appId = appId
+    public init?(appId: String, userId: Int, useStringUserId: Bool = false) {
+        let config = AgoraRtmClientConfig(appId: appId, userId: String(userId))
+        self.config = config
         config.useStringUserId = useStringUserId
-        config.userId = String(userId)
     }
 
     /// The area code for the RTM client.
     @objc public var areaCode: RtmAreaCode {
-        get { .init(rawValue: UInt(config.areaCode)) }
-        set { config.areaCode = UInt32(newValue.legacyAreaCode!.rawValue) }
+        get { .fromLegacy(config.areaCode) }
+        set { config.areaCode = newValue.legacyAreaCode! }
     }
 
     /// The timeout for user presence status updates.
@@ -115,7 +113,7 @@ import AgoraRtmKit
                 encConfig.encryptionKey = key
                 encConfig.encryptionSalt = salt?.data(using: .utf8)
                 encConfig.encryptionMode = .AES256GCM
-            default: break
+            case .none: break
             }
             self._encryptionConfig = encConfig
             config.encryptionConfig = encConfig

@@ -42,12 +42,14 @@ public class RtmPublishOptions {
 public struct RtmJoinChannelFeatures: OptionSet {
     public let rawValue: Int
 
-    /// Whether to join channel with metadata.
-    public static let metadata = RtmJoinChannelFeatures(rawValue: 1 << 0)
+    /// Whether to join channel with storage (metadata).
+    public static let metadata = RtmJoinChannelFeatures(rawValue: AgoraRtmJoinChannelFeature.metadata.rawValue)
     /// Whether to join channel with user presence.
-    public static let presence = RtmJoinChannelFeatures(rawValue: 1 << 1)
+    public static let presence = RtmJoinChannelFeatures(rawValue: AgoraRtmJoinChannelFeature.presence.rawValue)
     /// Whether to join channel with lock.
-    public static let lock = RtmJoinChannelFeatures(rawValue: 1 << 2)
+    public static let lock = RtmJoinChannelFeatures(rawValue: AgoraRtmJoinChannelFeature.lock.rawValue)
+
+    private init(rawValue: UInt) { self.init(rawValue: Int(rawValue)) }
 
     /// Initializes an option set with the given raw value.
     ///
@@ -55,6 +57,7 @@ public struct RtmJoinChannelFeatures: OptionSet {
     public init(rawValue: Int) {
         self.rawValue = rawValue
     }
+
 }
 
 /// Join channel options.
@@ -78,9 +81,7 @@ public class RtmJoinChannelOption {
     internal var objcVersion: AgoraRtmJoinChannelOption {
         let objcOpt = AgoraRtmJoinChannelOption()
         objcOpt.token = self.token
-        objcOpt.withMetadata = self.features.contains(.metadata)
-        objcOpt.withPresence = self.features.contains(.presence)
-        objcOpt.withLock = self.features.contains(.lock)
+        objcOpt.features = .init(rawValue: UInt(self.features.rawValue))
         return objcOpt
     }
 }

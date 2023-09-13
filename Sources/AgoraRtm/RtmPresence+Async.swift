@@ -31,10 +31,12 @@ public extension RtmPresence {
         in channel: RtmChannelDetails, options: RtmPresenceOptions? = nil
     ) async throws -> RtmOnlineUsersResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.presence.whoNow(
-            channelName, channelType: channelType,
+        await self.presence.getOnlineUser(channelName: channelName, channelType: channelType, options: nil)
+        let resp = await self.presence.getOnlineUser(
+            channelName: channelName, channelType: channelType,
             options: options?.objcVersion
-        ), operation: #function)
+        )
+        return try CompletionHandlers.handleAsyncThrow(resp, operation: #function)
     }
 
     /// Asynchronously queries which channels a user is currently in.
@@ -44,7 +46,9 @@ public extension RtmPresence {
     /// - Returns: A ``RtmUserChannelsResponse`` object with either the query response,
     ///            or an ``RtmErrorInfo``.
     func getUserChannels(for userId: String) async throws -> RtmUserChannelsResponse {
-        return try RtmClientKit.handleCompletion(await self.presence.whereNow(userId), operation: #function)
+        return try CompletionHandlers.handleAsyncThrow(
+            await self.presence.getUserChannels(userId: userId), operation: #function
+        )
     }
 
     /// > Renamed: ``getOnlineUsers(in:options:)``
@@ -81,8 +85,8 @@ public extension RtmPresence {
         to states: [String: String]
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.presence.setState(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await self.presence.setState(
+            channelName: channelName, channelType: channelType,
             items: states.map {
                 let stateItem = AgoraRtmStateItem()
                 stateItem.key = $0.key
@@ -104,9 +108,9 @@ public extension RtmPresence {
         keys: [String]
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.presence.removeState(
-            channelName, channelType: channelType,
-            items: keys
+        return try CompletionHandlers.handleAsyncThrow(await self.presence.removeState(
+            channelName: channelName, channelType: channelType,
+            keys: keys
         ), operation: #function)
     }
 
@@ -121,8 +125,8 @@ public extension RtmPresence {
         inChannel channel: RtmChannelDetails
     ) async throws -> RtmPresenceGetStateResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.presence.state(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await self.presence.getState(
+            channelName: channelName, channelType: channelType,
             userId: userId
         ), operation: #function)
     }

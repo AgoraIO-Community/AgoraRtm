@@ -33,11 +33,11 @@ extension RtmStorage {
         }
         let (channelName, channelType) = channel.objcVersion
         storage.setChannelMetadata(
-            channelName, channelType: channelType,
+            channelName: channelName, channelType: channelType,
             data: metadata,
             options: options?.objcVersion,
             lock: lock) { resp, err in
-                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
             }
     }
 
@@ -62,8 +62,8 @@ extension RtmStorage {
             throw RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
         }
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await storage.setChannelMetadata(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await storage.setChannelMetadata(
+            channelName: channelName, channelType: channelType,
             data: metadata,
             options: options?.objcVersion,
             lock: lock
@@ -96,12 +96,12 @@ extension RtmStorage {
         let (channelName, channelType) = channel.objcVersion
         let agoraOptions = options?.objcVersion
         storage.updateChannelMetadata(
-            channelName, channelType: channelType,
+            channelName: channelName, channelType: channelType,
             data: metadata,
             options: agoraOptions,
             lock: lock,
             completion: { resp, err in
-                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
             })
     }
 
@@ -125,8 +125,8 @@ extension RtmStorage {
             throw RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
         }
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await storage.updateChannelMetadata(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await storage.updateChannelMetadata(
+            channelName: channelName, channelType: channelType,
             data: metadata,
             options: options?.objcVersion,
             lock: lock
@@ -159,12 +159,12 @@ extension RtmStorage {
         let (channelName, channelType) = channel.objcVersion
         let agoraOptions = options?.objcVersion
         storage.removeChannelMetadata(
-            channelName, channelType: channelType,
+            channelName: channelName, channelType: channelType,
             data: metadata,
             options: agoraOptions,
             lock: lock,
             completion: { resp, err in
-                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
             })
     }
 
@@ -191,8 +191,8 @@ extension RtmStorage {
             )
         }
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await storage.removeChannelMetadata(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await storage.removeChannelMetadata(
+            channelName: channelName, channelType: channelType,
             data: metadata,
             options: options?.objcVersion,
             lock: lock
@@ -212,9 +212,9 @@ extension RtmStorage {
     ) {
         let (channelName, channelType) = channel.objcVersion
         storage.getChannelMetadata(
-            channelName, channelType: channelType
+            channelName: channelName, channelType: channelType
         ) { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -229,8 +229,8 @@ extension RtmStorage {
         forChannel channel: RtmChannelDetails
     ) async throws -> RtmGetMetadataResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await storage.channelMetadata(
-            channelName, channelType: channelType
+        return try CompletionHandlers.handleAsyncThrow(await storage.getChannelMetadata(
+            channelName: channelName, channelType: channelType
         ), operation: #function)
     }
 

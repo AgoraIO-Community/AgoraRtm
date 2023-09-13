@@ -22,7 +22,7 @@ To send messages within a Topic, you first need to join it. Currently, RTM allow
 
 When joining a Topic, you can use the options parameter to define specific attributes. These attributes will influence how messages are sent through the Topic, including message sequencing, priority, synchronization with audio/video data, and more. Detailed configurations can be found in the API documentation.
 
-After successfully joining a Topic, the SDK triggers an ``RtmClientDelegate/rtmClient(_:didReceiveTopicEvent:)-1urci`` event. All users in the channel who are listening to Topic events will receive this notification.
+After successfully joining a Topic, the SDK triggers an ``RtmClientDelegate/rtmKit(_:didReceiveTopicEvent:)-2d0dr`` event. All users in the channel who are listening to Topic events will receive this notification.
 
 ```swift
 do {
@@ -34,7 +34,7 @@ do {
 
 - ``RtmStreamChannel/joinTopic(_:with:)``
 - ``RtmStreamChannel/joinTopic(_:with:completion:)``
-- ``RtmClientDelegate/rtmClient(_:didReceiveTopicEvent:)-1urci``
+- ``RtmClientDelegate/rtmKit(_:didReceiveTopicEvent:)-2d0dr``
 
 ## Leaving a Topic
 

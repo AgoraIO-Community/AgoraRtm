@@ -75,19 +75,22 @@ The async method will throw an error of type ``RtmErrorInfo`` if there's any iss
 
 ### Delegate Message Events
 
-All messages will arrive in ``RtmClientDelegate/rtmClient(_:didReceiveMessageEvent:)-56d2u``, and can be handled in the following ways
+All messages will arrive in ``RtmClientDelegate/rtmKit(_:didReceiveMessageEvent:)-fl9b``, and can be handled in the following ways
 
 #### Text Messages
 
 ```swift
 func rtmClient(_ rtmClient: RtmClientKit, didReceiveMessageEvent event: RtmMessageEvent) {
     let messageString = event.message.getString()
-
-    print(messageString ?? "Invalid String")
+    switch event.message.content {
+    case .string(let str): print(messageString)
+    default: print("message is not a string")
+    }
 }
 ```
 
-- ``RtmMessage/getString()``
+- ``RtmMessage/content``
+- ``RtmMessageContent/string(_:)``
 
 
 #### Codable Messages

@@ -21,8 +21,8 @@ extension RtmLock {
         ttl: Int32
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.lock.setLock(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await self.lock.setLock(
+            channelName: channelName, channelType: channelType,
             lockName: lockName,
             ttl: ttl
         ), operation: #function)
@@ -38,8 +38,8 @@ extension RtmLock {
         fromChannel channel: RtmChannelDetails
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.lock.remove(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await self.lock.removeLock(
+            channelName: channelName, channelType: channelType,
             lockName: lockName
         ), operation: #function)
     }
@@ -56,8 +56,8 @@ extension RtmLock {
         retry: Bool = false
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.lock.acquireLock(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await self.lock.acquireLock(
+            channelName: channelName, channelType: channelType,
             lockName: lockName,
             retry: retry
         ), operation: #function)
@@ -73,8 +73,8 @@ extension RtmLock {
         fromChannel channel: RtmChannelDetails
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.lock.release(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await self.lock.releaseLock(
+            channelName: channelName, channelType: channelType,
             lockName: lockName
         ), operation: #function)
     }
@@ -91,8 +91,8 @@ extension RtmLock {
         userId: String
     ) async throws -> RtmCommonResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(await self.lock.revokeLock(
-            channelName, channelType: channelType,
+        return try CompletionHandlers.handleAsyncThrow(await self.lock.revokeLock(
+            channelName: channelName, channelType: channelType,
             lockName: lockName,
             userId: userId
         ), operation: #function)
@@ -106,8 +106,8 @@ extension RtmLock {
         forChannel channel: RtmChannelDetails
     ) async throws -> RtmGetLocksResponse {
         let (channelName, channelType) = channel.objcVersion
-        return try RtmClientKit.handleCompletion(
-            await self.lock.locks(channelName, channelType: channelType),
+        return try CompletionHandlers.handleAsyncThrow(
+            await self.lock.getLocks(channelName: channelName, channelType: channelType),
             operation: #function
         )
     }

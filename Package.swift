@@ -10,8 +10,8 @@ let package = Package(
             name: "AgoraRtmKit-Swift",
             targets: ["AgoraRtm"]),
         .library(
-            name: "AgoraRtmKit-OC",
-            targets: ["AgoraRtmKit-OC"]
+            name: "AgoraRtmKit-ObjC",
+            targets: ["AgoraRtmKit"]
         )
     ],
     dependencies: [
@@ -20,13 +20,14 @@ let package = Package(
     targets: [
         .target(
             name: "AgoraRtm",
-            dependencies: ["AgoraRtmKit-OC"]
+            dependencies: ["AgoraRtmKit"]
 //            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
+//        .binaryTarget(name: "AgoraRtmKit-OC", path: "AgoraRtmKit.xcframework.zip"),
         .binaryTarget(
-            name: "AgoraRtmKit-OC",
-            url: "https://github.com/AgoraIO/AgoraRtm_iOS/releases/download/2.1.4-nightly.23.08.10/AgoraRtmKit.xcframework.zip",
-            checksum: "5b227fba49bf7e8f5183f222d5ac5b15851c44576f4dfed1074d6b54c9bf83c4"
+            name: "AgoraRtmKit",
+            url: "https://github.com/AgoraIO-Community/AgoraRtm/releases/download/2.1.5-build.277405/AgoraRtmKit.xcframework.zip",
+            checksum: "6f0bcf244982562701a291d5519f9927a7fc5909020c5df9ce4905e38641333c"
         ),
         .testTarget(
             name: "AgoraRtmTests",

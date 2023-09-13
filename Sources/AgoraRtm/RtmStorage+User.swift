@@ -30,11 +30,11 @@ extension RtmStorage {
         }
         let agoraOptions = options?.objcVersion
         storage.setUserMetadata(
-            userId,
+            userId: userId,
             data: metadata,
             options: agoraOptions,
             completion: { resp, err in
-                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
             }
         )
     }
@@ -59,8 +59,8 @@ extension RtmStorage {
                 operation: #function, reason: "bad metadata"
             )
         }
-        return try RtmClientKit.handleCompletion(await storage.setUserMetadata(
-            userId,
+        return try CompletionHandlers.handleAsyncThrow(await storage.setUserMetadata(
+            userId: userId,
             data: metadata,
             options: options?.objcVersion
         ), operation: #function)
@@ -88,11 +88,11 @@ extension RtmStorage {
         }
         let agoraOptions = options?.objcVersion
         storage.updateUserMetadata(
-            userId,
+            userId: userId,
             data: metadata,
             options: agoraOptions,
             completion: { resp, err in
-                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
             })
     }
 
@@ -113,8 +113,8 @@ extension RtmStorage {
         guard let metadata = data.agoraMetadata else {
             throw RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
         }
-        return try RtmClientKit.handleCompletion(await storage.updateUserMetadata(
-            userId,
+        return try CompletionHandlers.handleAsyncThrow(await storage.updateUserMetadata(
+            userId: userId,
             data: metadata,
             options: options?.objcVersion
         ), operation: #function)
@@ -142,11 +142,11 @@ extension RtmStorage {
         }
         let agoraOptions = options?.objcVersion
         storage.removeUserMetadata(
-            userId,
+            userId: userId,
             data: metadata,
             options: agoraOptions,
             completion: { resp, err in
-                RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+                CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
             })
     }
 
@@ -167,8 +167,8 @@ extension RtmStorage {
         guard let metadata = data.agoraMetadata else {
             throw RtmErrorInfo(errorCode: .storageInvalidMetadataItem, operation: #function, reason: "bad metadata")
         }
-        return try RtmClientKit.handleCompletion(await storage.removeUserMetadata(
-            userId,
+        return try CompletionHandlers.handleAsyncThrow(await storage.removeUserMetadata(
+            userId: userId,
             data: metadata,
             options: options?.objcVersion
         ), operation: #function)
@@ -184,8 +184,8 @@ extension RtmStorage {
         userId: String,
         completion: @escaping (Result<RtmGetMetadataResponse, RtmErrorInfo>) -> Void
     ) {
-        storage.getUserMetadata(userId) { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+        storage.getUserMetadata(userId: userId) { resp, err in
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -199,8 +199,8 @@ extension RtmStorage {
     public func getUserMetadata(
         userId: String
     ) async throws -> RtmGetMetadataResponse? {
-        return try RtmClientKit.handleCompletion(
-            await storage.userMetadata(userId), operation: #function
+        return try CompletionHandlers.handleAsyncThrow(
+            await storage.getUserMetadata(userId: userId), operation: #function
         )
     }
 
@@ -214,8 +214,8 @@ extension RtmStorage {
         userId: String,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        storage.subscribeUserMetadata(userId) { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+        storage.subscribeUserMetadata(userId: userId) { resp, err in
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -229,7 +229,10 @@ extension RtmStorage {
     public func subscribeUserMetadata(
         userId: String
     ) async throws -> RtmCommonResponse {
-        return try RtmClientKit.handleCompletion(await storage.subscribeUserMetadata(userId), operation: #function)
+        return try CompletionHandlers.handleAsyncThrow(
+            await storage.subscribeUserMetadata(userId: userId),
+            operation: #function
+        )
     }
 
     /// Unsubscribes from the metadata update event of a specified user.
@@ -242,8 +245,8 @@ extension RtmStorage {
         userId: String,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
-        storage.unsubscribeUserMetadata(userId) { resp, err in
-            RtmClientKit.handleCompletion((resp, err), completion: completion, operation: #function)
+        storage.unsubscribeUserMetadata(userId: userId) { resp, err in
+            CompletionHandlers.handleSyncResult((resp, err), completion: completion, operation: #function)
         }
     }
 
@@ -257,7 +260,10 @@ extension RtmStorage {
     public func unsubscribeUserMetadata(
         userId: String
     ) async throws -> RtmCommonResponse {
-        return try RtmClientKit.handleCompletion(await storage.unsubscribeUserMetadata(userId), operation: #function)
+        return try CompletionHandlers.handleAsyncThrow(
+            await storage.unsubscribeUserMetadata(userId: userId),
+            operation: #function
+        )
     }
 
 }

@@ -108,11 +108,11 @@ do {
 - ``RtmPresence/setUserState(inChannel:to:)``
 - ``RtmPresence/setUserState(inChannel:to:completion:)``
 
-Upon any changes to the user state, RTM will trigger an ``RtmPresenceEventType/remoteStateChanged`` event in ``RtmClientDelegate/rtmClient(_:didReceivePresenceEvent:)-5i7da``, which can be received by subscribing to the channel and setting the appropriate configurations.
+Upon any changes to the user state, RTM will trigger an ``RtmPresenceEventType/remoteStateChanged`` event in ``RtmClientDelegate/rtmKit(_:didReceivePresenceEvent:)-2w28u``, which can be received by subscribing to the channel and setting the appropriate configurations.
 
 ## Remove Local User State in Channel
 
-The ``RtmPresence/removeUserState(inChannel:keys:)`` method allows you to remove one or more temporary states for the local user within a specified channel. When a user successfully calls this method, other users subscribed to the same channel and with the Presence event ``RtmPresenceOptionFeatures/userState`` enabled will receive a notification of type ``RtmPresenceEventType/remoteStateChanged`` through the ``RtmClientDelegate/rtmClient(_:didReceivePresenceEvent:)-5i7da`` event.
+The ``RtmPresence/removeUserState(inChannel:keys:)`` method allows you to remove one or more temporary states for the local user within a specified channel. When a user successfully calls this method, other users subscribed to the same channel and with the Presence event ``RtmPresenceOptionFeatures/userState`` enabled will receive a notification of type ``RtmPresenceEventType/remoteStateChanged`` through the ``RtmClientDelegate/rtmKit(_:didReceivePresenceEvent:)-2w28u`` event.
 
 ```swift
 do {

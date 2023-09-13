@@ -61,11 +61,11 @@ public class RtmLock {
     ) {
         let (channelName, channelType) = channel.objcVersion
         lock.setLock(
-            channelName, channelType: channelType,
+            channelName: channelName, channelType: channelType,
             lockName: lockName,
             ttl: ttl
         ) { resp, error in
-            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -80,11 +80,11 @@ public class RtmLock {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
-        lock.remove(
-            channelName, channelType: channelType,
+        lock.removeLock(
+            channelName: channelName, channelType: channelType,
             lockName: lockName
         ) { resp, error in
-            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -102,11 +102,11 @@ public class RtmLock {
     ) {
         let (channelName, channelType) = channel.objcVersion
         lock.acquireLock(
-            channelName, channelType: channelType,
+            channelName: channelName, channelType: channelType,
             lockName: lockName,
             retry: retry
         ) { resp, error in
-            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -121,11 +121,11 @@ public class RtmLock {
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         let (channelName, channelType) = channel.objcVersion
-        lock.release(
-            channelName, channelType: channelType,
+        lock.releaseLock(
+            channelName: channelName, channelType: channelType,
             lockName: lockName
         ) { resp, error in
-            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -143,11 +143,11 @@ public class RtmLock {
     ) {
         let (channelName, channelType) = channel.objcVersion
         lock.revokeLock(
-            channelName, channelType: channelType,
+            channelName: channelName, channelType: channelType,
             lockName: lockName,
             userId: userId
         ) { resp, error in
-            RtmClientKit.handleCompletion((resp, error), completion: completion, operation: #function)
+            CompletionHandlers.handleSyncResult((resp, error), completion: completion, operation: #function)
         }
     }
 
@@ -160,8 +160,8 @@ public class RtmLock {
         completion: @escaping (Result<RtmGetLocksResponse, RtmErrorInfo>) -> Void
     ) {
         let (channelName, channelType) = channel.objcVersion
-        lock.getLocks(channelName, channelType: channelType) { locks, err in
-            RtmClientKit.handleCompletion((locks, err), completion: completion, operation: #function)
+        lock.getLocks(channelName: channelName, channelType: channelType) { locks, err in
+            CompletionHandlers.handleSyncResult((locks, err), completion: completion, operation: #function)
         }
     }
 }

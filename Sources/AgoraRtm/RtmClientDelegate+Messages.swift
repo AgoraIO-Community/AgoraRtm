@@ -27,28 +27,23 @@ public enum RtmMessageType: Int {
     case unknown = -1
 }
 
+public enum RtmMessageContent {
+    case string(String)
+    case data(Data)
+}
+
 /// A representation of an RTM message.
 public struct RtmMessage {
 
-    public let data: NSObject?
-    /// The type of the message.
-    public let type: RtmMessageType
+    public let content: RtmMessageContent
 
     /// Initializes an instance of `RtmMessage`.
     ///
     /// - Parameters:
     ///   - data: The payload data of the message.
     ///   - type: The type of the message.
-    internal init(data: NSObject?, type: RtmMessageType) {
-        self.data = data
-        self.type = type
-    }
-
-    /// Retrieves the payload data of the message as `String` if possible.
-    ///
-    /// - Returns: The payload data of the message as `String` if it can, otherwise `nil`.
-    public func getString() -> String? {
-        return data as? String
+    internal init(content: RtmMessageContent) {
+        self.content = content
     }
 
     /// Decodes a JSON string into a Codable value of the specified type.
@@ -60,10 +55,16 @@ public struct RtmMessage {
     ///   - type: The Codable type to decode the JSON string into.
     /// - Returns: A decoded Codable value of the specified type, or nil if decoding fails.
     public func decodeMessage<T: Codable>(as type: T.Type) -> T? {
+        var jsonData: Data
         // Retrieve the JSON string to decode. Then convert the JSON string to UTF-8 encoded data.
-        guard let dataStr = getString(),
-              let jsonData = dataStr.data(using: .utf8)
-        else { return nil }
+        switch self.content {
+        case .data(let data): jsonData = data
+        case .string(let str):
+            guard let strData = str.data(using: .utf8) else {
+                return nil
+            }
+            jsonData = strData
+        }
 
         do {
             // Initialize a JSON decoder.
@@ -82,14 +83,14 @@ public struct RtmMessage {
     /// Initializes an instance of `RtmMessage` with the provided AgoraRtmMessage object.
     ///
     /// - Parameter agoraMessage: The AgoraRtmMessage object to extract message details from.
-    internal init(_ agoraMessage: AgoraRtmMessage) {
-        let type: RtmMessageType
-        switch agoraMessage.getType() {
-        case .string: type = .string
-        case .binary: type = .binary
-        @unknown default: type = .unknown
+    internal init?(_ agoraMessage: AgoraRtmMessage) {
+        if let data = agoraMessage.rawData {
+            self.init(content: .data(data))
+        } else if let str = agoraMessage.stringData {
+            self.init(content: .string(str))
+        } else {
+            return nil
         }
-        self.init(data: agoraMessage.getData(), type: type)
     }
 }
 
@@ -117,11 +118,12 @@ public struct RtmMessageEvent {
     /// Initializes an instance of `RtmMessageEvent` with the provided AgoraRtmMessageEvent object.
     ///
     /// - Parameter messageEvent: The AgoraRtmMessageEvent object to extract message event details from.
-    internal init(_ messageEvent: AgoraRtmMessageEvent) {
+    internal init?(_ messageEvent: AgoraRtmMessageEvent) {
+        guard let msg = RtmMessage.init(messageEvent.message) else { return nil }
         self.channelType = .init(rawValue: messageEvent.channelType.rawValue) ?? .none
         self.channelName = messageEvent.channelName
         self.channelTopic = messageEvent.channelTopic
-        self.message = .init(messageEvent.message)
+        self.message = msg
         self.publisher = messageEvent.publisher
         self.customType = messageEvent.customType
     }

@@ -89,16 +89,23 @@ final class RtmClientConfigTests: XCTestCase {
 
     func testAreaCodeConfig() {
         let euJapan: RtmAreaCode = [.europe, .japan]
-        let euJapanInd = euJapan.union(.india)
         config.areaCode = euJapan
-        print("euJapan.rawValue")
-        print(euJapan.rawValue)
-        print(euJapanInd.rawValue)
-        XCTAssertEqual(config.config.areaCode, UInt32(euJapan.rawValue))
+        XCTAssertEqual(config.config.areaCode, [.EU, .JP])
         config.areaCode = euJapan.union(.india)
-        XCTAssertEqual(config.config.areaCode, UInt32(euJapan.union(.india).rawValue))
+        XCTAssertEqual(config.config.areaCode.rawValue, euJapan.union(.india).rawValue)
         let ocUnion = [AgoraRtmAreaCode.EU, .JP, .IN].reduce(0) { $0 | $1.rawValue }
-        XCTAssertEqual(config.config.areaCode, UInt32(ocUnion))
+        XCTAssertEqual(config.config.areaCode.rawValue, ocUnion)
+    }
+
+    func testAreaCodeValues() {
+        let allSwiftAC: [RtmAreaCode] = [
+            .asiaExcludingChina, .europe, .global,
+            .india, .japan, .mainlandChina, .northAmerica
+        ]
+        let allObjcAC: [AgoraRtmAreaCode] = [.AS, .EU, .GLOB, .IN, .JP, .CN, .NA]
+        for (swiftAC, objcAc) in zip(allSwiftAC, allObjcAC) {
+            XCTAssertEqual(swiftAC.rawValue, objcAc.rawValue)
+        }
     }
 
 }
