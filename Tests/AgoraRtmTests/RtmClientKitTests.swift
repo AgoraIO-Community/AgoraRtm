@@ -15,7 +15,7 @@ final class RtmClientKitTests: XCTestCase {
     var rtmClient: RtmClientKit!
 
     override func setUpWithError() throws {
-        let config = RtmClientConfig(appId: "87654321234567898765432123456789", userId: "yourUserId")!
+        let config = RtmClientConfig(appId: "87654321234567898765432123456789", userId: "yourUserId")
         rtmClient = try RtmClientKit(config: config, delegate: nil)
     }
 
@@ -48,7 +48,7 @@ final class RtmClientKitTests: XCTestCase {
     func testInvalidAppIdInit() throws {
         _ = try? rtmClient?.destroy()
 //        XCTAssertNil(rtmClient.agoraRtmClient)
-        let config = RtmClientConfig(appId: "bad-app-id", userId: "yourUserId")!
+        let config = RtmClientConfig(appId: "bad-app-id", userId: "yourUserId")
         let expectation = XCTestExpectation(description: "Error thrown")
         XCTAssertThrowsError(try RtmClientKit(config: config, delegate: nil)) { error in
             if let error = error as? RtmErrorInfo {

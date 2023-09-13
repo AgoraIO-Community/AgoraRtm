@@ -18,7 +18,7 @@ import AgoraRtmKit
     ///   - userId: The user ID for the RTM client.
     ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer.
     ///                      Default is `true`.
-    @objc public init?(appId: String, userId: String, useStringUserId: Bool = true) {
+    @objc public init(appId: String, userId: String, useStringUserId: Bool = true) {
         let config = AgoraRtmClientConfig(appId: appId, userId: userId)
         self.config = config
         config.useStringUserId = useStringUserId
@@ -31,9 +31,8 @@ import AgoraRtmKit
     ///   - userId: The user ID for the RTM client as an integer value.
     ///   - useStringUserId: A flag to indicate whether the user ID should be treated as a string or an integer.
     ///                      Default is `false`.
-    public init?(appId: String, userId: Int, useStringUserId: Bool = false) {
-        let config = AgoraRtmClientConfig(appId: appId, userId: String(userId))
-        self.config = config
+    public init(appId: String, userId: Int, useStringUserId: Bool = false) {
+        self.config = AgoraRtmClientConfig(appId: appId, userId: String(userId))
         config.useStringUserId = useStringUserId
     }
 

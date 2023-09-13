@@ -14,7 +14,7 @@ final class RtmDelegateTests: XCTestCase {
     var rtmClient: RtmClientKit!
 
     override func setUpWithError() throws {
-        let config = RtmClientConfig(appId: "87654321234567898765432123456789", userId: "yourUserId")!
+        let config = RtmClientConfig(appId: "87654321234567898765432123456789", userId: "yourUserId")
         rtmClient = try RtmClientKit(config: config, delegate: nil)
     }
 

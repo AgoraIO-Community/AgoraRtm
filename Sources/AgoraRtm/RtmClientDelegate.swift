@@ -96,7 +96,7 @@ extension RtmClientKit: DelegateLister {}
 internal class DelegateProxy: NSObject {
     weak var delegateLister: DelegateLister?
 
-    init?(delegateLister: DelegateLister? = nil) {
+    init(delegateLister: DelegateLister) {
         self.delegateLister = delegateLister
     }
 }
