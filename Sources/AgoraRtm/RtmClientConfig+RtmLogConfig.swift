@@ -10,22 +10,6 @@ import AgoraRtmKit
 /// A configuration for controlling the log output of the Agora Real-Time Messaging (RTM) client.
 @objc public class RtmLogConfig: NSObject {
 
-    /// The log level options for the RTM client.
-    @objc public enum RtmLogLevel: Int {
-        /// No log output.
-        case none    = 0b00000
-        /// Log level for informational messages.
-        case info    = 0b00001
-        /// Log level for warning messages.
-        case warn    = 0b00010
-        /// Log level for error messages.
-        case error   = 0b00100
-        /// Log level for fatal error messages.
-        case fatal   = 0b01000
-        /// Log level for API call messages.
-        case apiCall = 0b10000
-    }
-
     internal let config: AgoraRtmLogConfig
 
     /// Initializes the RTM log configuration with the specified log level, file path, and file size in kilobytes.
@@ -58,4 +42,20 @@ import AgoraRtmKit
         get { .init(rawValue: config.level.rawValue) ?? .warn }
         set { config.level = .init(rawValue: newValue.rawValue) ?? .warn }
     }
+}
+
+/// The log level options for the RTM client.
+@objc public enum RtmLogLevel: Int {
+    /// No log output.
+    case none    = 0b00000
+    /// Log level for informational messages.
+    case info    = 0b00001
+    /// Log level for warning messages.
+    case warn    = 0b00010
+    /// Log level for error messages.
+    case error   = 0b00100
+    /// Log level for fatal error messages.
+    case fatal   = 0b01000
+    /// Log level for API call messages.
+    case apiCall = 0b10000
 }

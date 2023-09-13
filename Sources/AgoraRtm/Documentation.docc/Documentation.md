@@ -24,9 +24,11 @@ AgoraRtm is a class that provides real-time messaging functionalities for applic
 
 ### Errors
 
-- <doc:Error-Messages>
+- <doc:Troubleshooting>
 - ``RtmErrorInfo``
 - ``RtmErrorCode``
+- ``RtmLogConfig``
+- ``RtmLogLevel``
 - ``RtmLegalCharacterSets``
 
 ### Messages

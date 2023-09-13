@@ -1,4 +1,4 @@
-# Error Messages
+# Troubleshooting
 
 Learn how to enable detailed log output and handle error messages efficiently in your Agora Signaling application.
 
@@ -18,9 +18,9 @@ let logConfig = RtmLogConfig(
 rtmConfig.logConfig = logConfig
 ```
 
-The level field can be set to one of the five levels: ``RtmLogConfig/RtmLogLevel/info``, ``RtmLogConfig/RtmLogLevel/warn``, ``RtmLogConfig/RtmLogLevel/error``, ``RtmLogConfig/RtmLogLevel/fatal``, ``RtmLogConfig/RtmLogLevel/none``. Among them, ``RtmLogConfig/RtmLogLevel/info`` outputs the most detailed log information, and ``RtmLogConfig/RtmLogLevel/none`` does not output log information.
+The level field can be set to one of the five levels: ``RtmLogLevel/info``, ``RtmLogLevel/warn``, ``RtmLogLevel/error``, ``RtmLogLevel/fatal``, ``RtmLogLevel/none``. Among them, ``RtmLogLevel/info`` outputs the most detailed log information, and ``RtmLogLevel/none`` does not output log information.
 
-Using a build flag, you can set your log level to ``RtmLogConfig/RtmLogLevel/none`` when your app goes to production.
+Using a build flag, you can set your log level to ``RtmLogLevel/none`` when your app goes to production.
 
 ---
 
