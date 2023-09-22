@@ -110,7 +110,7 @@ open class RtmStreamChannel: NSObject {
     ///                 The result will contain either a successful `RtmCommonResponse`
     ///                 or an error of type `RtmErrorInfo`.
     public func joinTopic(
-        _ topic: String, with option: RtmJoinTopicOption?,
+        _ topic: String, with option: RtmJoinTopicOption? = nil,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         channel.joinTopic(topic, option: option?.objcVersion, completion: { resp, err in
@@ -127,7 +127,7 @@ open class RtmStreamChannel: NSObject {
     /// - Throws: An error of type ``RtmErrorInfo`` if the operation fails.
     @discardableResult @available(iOS 13.0.0, *)
     public func joinTopic(
-        _ topic: String, with option: RtmJoinTopicOption?
+        _ topic: String, with option: RtmJoinTopicOption? = nil
     ) async throws -> RtmCommonResponse {
         return try CompletionHandlers.handleAsyncThrow(
             await channel.joinTopic(topic, option: option?.objcVersion),

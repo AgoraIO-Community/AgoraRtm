@@ -135,7 +135,7 @@ public class RtmJoinTopicOption {
     ///   - meta: Metadata of the topic.
     ///   - priority: Priority of the RTM message.
     ///   - syncWithMedia: Whether the RTM data will synchronize with media.
-    init(
+    public init(
         qos: RtmMessageQos = .ordered, meta: String? = nil,
         priority: RtmMessagePriority = .normal, syncWithMedia: Bool = false
     ) {
