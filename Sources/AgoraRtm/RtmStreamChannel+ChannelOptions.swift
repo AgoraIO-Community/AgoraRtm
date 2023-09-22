@@ -107,11 +107,11 @@ public class RtmJoinChannelOption {
 
 /// Create topic options.
 public class RtmJoinTopicOption {
-    /// The quality of service for the RTM message.
+    /// Quality of service for the RTM message.
     public var qos: RtmMessageQos = .ordered
-    /// The meta-data of the topic.
+    /// Metadata of the topic.
     public var meta: String?
-    /// The priority of the RTM message.
+    /// Priority of the RTM message.
     public var priority: RtmMessagePriority = .normal
     /// Whether the RTM data will synchronize with media.
     public var syncWithMedia: Bool = false
@@ -124,5 +124,24 @@ public class RtmJoinTopicOption {
         objcOpt.priority = .init(rawValue: self.priority.rawValue)!
         objcOpt.syncWithMedia = self.syncWithMedia
         return objcOpt
+    }
+
+    /// Create a new ``RtmJoinTopicOption`` instance.
+    ///
+    /// Used with ``RtmStreamChannel/joinTopic(_:with:)``.
+    ///
+    /// - Parameters:
+    ///   - qos: Quality of service for the RTM message.
+    ///   - meta: Metadata of the topic.
+    ///   - priority: Priority of the RTM message.
+    ///   - syncWithMedia: Whether the RTM data will synchronize with media.
+    init(
+        qos: RtmMessageQos = .ordered, meta: String? = nil,
+        priority: RtmMessagePriority = .normal, syncWithMedia: Bool = false
+    ) {
+        self.qos = qos
+        self.meta = meta
+        self.priority = priority
+        self.syncWithMedia = syncWithMedia
     }
 }
