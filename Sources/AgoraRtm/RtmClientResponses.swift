@@ -56,19 +56,19 @@ public class RtmMetadataItem {
     }
 
     /// The User ID of the user who made the latest update to the metadata item.
-    public var authorUserId: String {
+    public internal(set) var authorUserId: String {
         get { return agoraMetadataItem.authorUserId }
         set { agoraMetadataItem.authorUserId = newValue }
     }
 
     /// The revision of the metadata item.
-    public var revision: Int64 {
+    public internal(set) var revision: Int64 {
         get { return agoraMetadataItem.revision }
         set { agoraMetadataItem.revision = newValue }
     }
 
     /// The timestamp when the metadata item was last updated.
-    public var updateTs: UInt64 {
+    public internal(set) var updateTs: UInt64 {
         get { return agoraMetadataItem.updateTs }
         set { agoraMetadataItem.updateTs = newValue }
     }
@@ -78,6 +78,16 @@ public class RtmMetadataItem {
     /// - Parameter agoraMetadataItem: The `AgoraRtmMetadataItem` object to initialize from.
     internal init(_ agoraMetadataItem: AgoraRtmMetadataItem) {
         self.agoraMetadataItem = agoraMetadataItem
+    }
+
+    /// Create a new ``RtmMetadataItem``.
+    /// - Parameters:
+    ///   - key: The key of the metadata item.
+    ///   - value: The value of the metadata item.
+    public init(key: String, value: String) {
+        self.agoraMetadataItem = AgoraRtmMetadataItem()
+        self.agoraMetadataItem.key = key
+        self.agoraMetadataItem.value = value
     }
 }
 
@@ -94,7 +104,30 @@ public class RtmMetadata {
 
     /// The array of metadata items of the current metadata.
     public var metadataItems: [RtmMetadataItem] {
-        return agoraMetadata.getItems().map { RtmMetadataItem($0) }
+        agoraMetadata.getItems().map { RtmMetadataItem($0) }
+    }
+
+    /// Sets or revises a metadata item in the current metadata.
+    ///
+    /// - Parameter item: The `RtmMetadataItem` to set or revise.
+    public func setMetadataItem(_ item: RtmMetadataItem) {
+        self.agoraMetadata.setMetadataItem(item.agoraMetadataItem)
+    }
+
+    /// Sets or revises multiple metadata items in the current metadata.
+    ///
+    /// - Parameter items: A dictionary containing key-value pairs to set or revise as metadata items.
+    public func setMetadataItems(_ items: [String: String]) {
+        items.forEach {
+            self.setMetadataItem(.init(key: $0.key, value: $0.value))
+        }
+    }
+
+    /// Sets or revises multiple metadata items in the current metadata using an array of `RtmMetadataItem` objects.
+    ///
+    /// - Parameter items: An array of `RtmMetadataItem` objects to set or revise as metadata items.
+    public func setMetadataItems(_ items: [RtmMetadataItem]) {
+        items.forEach { self.setMetadataItem($0) }
     }
 
     /// Initializes an instance of `RtmMetadata` with an `AgoraRtmMetadata` object.
@@ -105,21 +138,14 @@ public class RtmMetadata {
         self.agoraMetadata = agoraMetadata
     }
 
-    /// Add or revise a metadata item to the current metadata.
-    ///
-    /// - Parameter item: The RtmMetadataItem to set.
-    public func setMetadataItem(_ item: RtmMetadataItem) {
-        agoraMetadata.setMetadataItem(item.agoraMetadataItem)
-    }
-
     /// Clear the array of metadata items and reset the major revision.
     public func clearMetadata() {
         agoraMetadata.clear()
     }
 
-    /// Destroy the metadata instance.
+    /// Destroys the metadata instance.
     ///
-    /// - Returns: An integer indicating the result of the operation.
+    /// - Returns: An integer indicating the result of the operation. A non-zero value indicates an error.
     public func destroy() -> Int32 {
         let destResp = agoraMetadata?.destroy() ?? 0
         self.agoraMetadata = nil
