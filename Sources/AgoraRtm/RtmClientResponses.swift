@@ -56,22 +56,20 @@ public class RtmMetadataItem {
     }
 
     /// The User ID of the user who made the latest update to the metadata item.
-    public internal(set) var authorUserId: String {
-        get { return agoraMetadataItem.authorUserId }
-        set { agoraMetadataItem.authorUserId = newValue }
-    }
+    ///
+    /// This property is set interanlly by the SDK.
+    public var authorUserId: String { agoraMetadataItem.authorUserId }
 
-    /// The revision of the metadata item.
-    public internal(set) var revision: Int64 {
+    /// The revision of the metadata item. Default -1.
+    public var revision: Int64 {
         get { return agoraMetadataItem.revision }
         set { agoraMetadataItem.revision = newValue }
     }
 
     /// The timestamp when the metadata item was last updated.
-    public internal(set) var updateTs: UInt64 {
-        get { return agoraMetadataItem.updateTs }
-        set { agoraMetadataItem.updateTs = newValue }
-    }
+    ///
+    /// This property is set interanlly by the SDK.
+    public var updateTs: UInt64 { agoraMetadataItem.updateTs }
 
     /// Initializes an instance of `RtmMetadataItem` with an `AgoraRtmMetadataItem` object.
     ///
@@ -84,10 +82,12 @@ public class RtmMetadataItem {
     /// - Parameters:
     ///   - key: The key of the metadata item.
     ///   - value: The value of the metadata item.
-    public init(key: String, value: String) {
+    ///   - revision: The revision of the metadata item. Default -1.
+    public init(key: String, value: String, revision: Int64 = -1) {
         self.agoraMetadataItem = AgoraRtmMetadataItem()
         self.agoraMetadataItem.key = key
         self.agoraMetadataItem.value = value
+        self.revision = revision
     }
 }
 

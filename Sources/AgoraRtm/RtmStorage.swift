@@ -26,6 +26,11 @@ public class RtmMetadataOptions {
         agoraOptions.recordUserId = recordUserId
         return agoraOptions
     }
+
+    public init(recordTs: Bool = true, recordUserId: Bool = true) {
+        self.recordTs = true
+        self.recordUserId = true
+    }
 }
 
 /// Represents storage operations for metadata in the Agora RTM system.
