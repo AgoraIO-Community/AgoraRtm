@@ -126,9 +126,11 @@ extension DelegateProxy: AgoraRtmClientDelegate {
     }
 
     public func rtmKit(_ rtmKit: AgoraRtmClientKit, didReceivePresenceEvent event: AgoraRtmPresenceEvent) {
-        guard let delegateSet, let client else { return }
+        guard let delegateSet, let client,
+              let presenceEvent = RtmPresenceEvent(event)
+        else { return }
         delegateSet.allObjects.forEach { ($0 as? RtmClientDelegate)?
-            .rtmKit(client, didReceivePresenceEvent: RtmPresenceEvent(event)) }
+            .rtmKit(client, didReceivePresenceEvent: presenceEvent) }
     }
 
     public func rtmKit(_ rtmKit: AgoraRtmClientKit, didReceiveLockEvent event: AgoraRtmLockEvent) {

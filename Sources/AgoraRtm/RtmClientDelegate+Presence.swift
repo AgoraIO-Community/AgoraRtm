@@ -8,23 +8,36 @@
 import AgoraRtmKit
 
 /// Represents the type of an RTM presence event.
-public enum RtmPresenceEventType: Int {
+public enum RtmPresenceEventType {
     /// Unknown event type.
-    case none = 0
+    case none
     /// The presence snapshot of this channel.
-    case snapshot = 1
+    /// - Parameter states: The snapshot of presence information.
+    case snapshot(states: [String: [String: String]])
     /// The presence event triggered in interval mode.
-    case interval = 2
+    case interval
     /// Triggered when a remote user joins the channel.
-    case remoteJoinChannel = 3
+    ///
+    /// - Parameter user: Username of the user that has joined the channel.
+    case remoteJoinChannel(user: String)
     /// Triggered when a remote user leaves the channel.
-    case remoteLeaveChannel = 4
+    ///
+    /// - Parameter user: Username of the user that has left the channel.
+    case remoteLeaveChannel(user: String)
     /// Triggered when a remote user's connection times out.
-    case remoteConnectionTimeout = 5
+    ///
+    /// - Parameter user: Username of the user that has lost connection.
+    case remoteConnectionTimeout(user: String)
     /// Triggered when a user's state changes.
-    case remoteStateChanged = 6
+    ///
+    /// - Parameters:
+    ///   - user: Username of the user whose state has changed.
+    ///   - states: New collection of states.
+    case remoteStateChanged(user: String, states: [String: String])
     /// Triggered when a user joins a channel without presence service.
-    case errorOutOfService = 7
+    ///
+    /// - Parameter user: Username of the user that has joined without presence.
+    case errorOutOfService(user: String)
 }
 
 /// Represents an interval of presence event in the Agora RTM system.
@@ -92,26 +105,77 @@ public struct RtmPresenceEvent {
     public let states: [String: String]
     /// The presence interval information. Only valid when in interval mode.
     public let interval: RtmPresenceIntervalInfo?
-    /// The snapshot of presence information. Only valid when receiving a snapshot event.
-    public let snapshot: [String: [String: String]]
 
+    private static func publisherPresenceType(
+        eventType: AgoraRtmPresenceEventType, publisher: String?
+    ) -> RtmPresenceEventType {
+        guard let publisher else {
+            print("""
+            Invalid presence:
+                Type: \(eventType.rawValue)
+                Reason: missing publisher
+            """)
+            return .none
+        }
+        if eventType == .remoteJoinChannel {
+            return .remoteJoinChannel(user: publisher)
+        } else if eventType == .remoteLeaveChannel {
+            return .remoteLeaveChannel(user: publisher)
+        } else if eventType == .remoteConnectionTimeout {
+            return .remoteConnectionTimeout(user: publisher)
+        } else if eventType == .errorOutOfService {
+            return .errorOutOfService(user: publisher)
+        }
+        print("""
+        Invalid presence:
+            Type: \(eventType.rawValue)
+            Reason: Wrong Type for \(#function)
+        """)
+        return .none
+
+    }
     /// Initializes an instance of `RtmPresenceEvent`.
     /// - Parameter presence: The AgoraRtmPresenceEvent object to extract presence event details from.
-    internal init(_ presence: AgoraRtmPresenceEvent) {
-        self.type = .init(rawValue: presence.type.rawValue) ?? .none
+    internal init?(_ presence: AgoraRtmPresenceEvent) {
+        let states = presence.states.reduce(into: [String: String]()) { result, stateItem in
+            result[stateItem.key] = stateItem.value
+        }
+        switch presence.type {
+        case .remoteJoinChannel, .remoteLeaveChannel,
+             .remoteConnectionTimeout,
+             .errorOutOfService:
+            self.type = RtmPresenceEvent.publisherPresenceType(
+                eventType: presence.type, publisher: presence.publisher)
+        case .remoteStateChanged:
+            if let publisher = presence.publisher {
+                self.type = .remoteStateChanged(user: publisher, states: states)
+            } else {
+                print("""
+                Invalid presence:
+                    Type: remoteStateChanged
+                    Reason: missing publisher
+                """)
+                self.type = .none
+            }
+        case .snapshot:
+            self.type = .snapshot(states: presence.snapshot.reduce(
+                into: [String: [String: String]]()
+            ) { result, userState in
+                var stateDict = [String: String]()
+                userState.states.forEach { keyValue in
+                    stateDict[keyValue.key] = keyValue.value
+                }
+                result[userState.userId] = stateDict
+            })
+        case .interval:
+            self.type = .interval
+        case .none: self.type = .none
+        @unknown default: self.type = .none
+        }
+        self.states = states
         self.channelType = .init(rawValue: presence.channelType.rawValue) ?? .none
         self.channelName = presence.channelName
         self.publisher = presence.publisher
-        self.states = presence.states.reduce(into: [String: String]()) { result, stateItem in
-            result[stateItem.key] = stateItem.value
-        }
         self.interval = .init(presence.interval)
-        self.snapshot = presence.snapshot.reduce(into: [String: [String: String]]()) { result, userState in
-            var stateDict = [String: String]()
-            userState.states.forEach { keyValue in
-                stateDict[keyValue.key] = keyValue.value
-            }
-            result[userState.userId] = stateDict
-        }
     }
 }
