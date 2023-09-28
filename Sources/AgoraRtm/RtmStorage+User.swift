@@ -193,12 +193,12 @@ extension RtmStorage {
     ///
     /// - Parameters:
     ///   - userId: The user ID of the specified user.
-    /// - Returns: On success, it returns ``RtmMetadata``.
+    /// - Returns: On success, it returns ``RtmGetMetadataResponse``.
     ///            On failure, throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
     public func getMetadata(
         forUser userId: String
-    ) async throws -> RtmGetMetadataResponse? {
+    ) async throws -> RtmGetMetadataResponse {
         return try CompletionHandlers.handleAsyncThrow(
             await storage.getUserMetadata(userId: userId), operation: #function
         )
@@ -210,8 +210,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - completion: The completion handler to be called with the operation result,
     ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
-    public func subscribeUserMetadata(
-        userId: String,
+    public func subscribeToMetadata(
+        forUser userId: String,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         storage.subscribeUserMetadata(userId: userId) { resp, err in
@@ -226,8 +226,8 @@ extension RtmStorage {
     /// - Returns: On success, it returns ``RtmCommonResponse``.
     ///            On failure, it throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
-    public func subscribeUserMetadata(
-        userId: String
+    public func subscribeToMetadata(
+        forUser userId: String
     ) async throws -> RtmCommonResponse {
         return try CompletionHandlers.handleAsyncThrow(
             await storage.subscribeUserMetadata(userId: userId),
@@ -241,8 +241,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - completion: The completion handler to be called with the operation result,
     ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
-    public func unsubscribeUserMetadata(
-        userId: String,
+    public func unsubscribeFromMetadata(
+        forUser userId: String,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
     ) {
         storage.unsubscribeUserMetadata(userId: userId) { resp, err in
@@ -257,8 +257,8 @@ extension RtmStorage {
     /// - Returns: On success, it returns ``RtmCommonResponse``.
     ///            On failure, it throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
-    public func unsubscribeUserMetadata(
-        userId: String
+    public func unsubscribeFromMetadata(
+        forUser userId: String
     ) async throws -> RtmCommonResponse {
         return try CompletionHandlers.handleAsyncThrow(
             await storage.unsubscribeUserMetadata(userId: userId),
