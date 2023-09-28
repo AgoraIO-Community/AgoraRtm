@@ -180,8 +180,8 @@ extension RtmStorage {
     ///   - userId: The user ID of the specified user.
     ///   - completion: The completion handler to be called with the operation result,
     ///                 `Result<RtmGetMetadataResponse, RtmErrorInfo>`.
-    public func getUserMetadata(
-        userId: String,
+    public func getMetadata(
+        forUser userId: String,
         completion: @escaping (Result<RtmGetMetadataResponse, RtmErrorInfo>) -> Void
     ) {
         storage.getUserMetadata(userId: userId) { resp, err in
@@ -196,8 +196,8 @@ extension RtmStorage {
     /// - Returns: On success, it returns ``RtmMetadata``.
     ///            On failure, throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *)
-    public func getUserMetadata(
-        userId: String
+    public func getMetadata(
+        forUser userId: String
     ) async throws -> RtmGetMetadataResponse? {
         return try CompletionHandlers.handleAsyncThrow(
             await storage.getUserMetadata(userId: userId), operation: #function
