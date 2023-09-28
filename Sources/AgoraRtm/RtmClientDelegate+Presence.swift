@@ -15,7 +15,8 @@ public enum RtmPresenceEventType {
     /// - Parameter states: The snapshot of presence information.
     case snapshot(states: [String: [String: String]])
     /// The presence event triggered in interval mode.
-    case interval
+    /// - Parameter interval: Represents an interval of presence event in the Agora RTM system.
+    case interval(_ interval: RtmPresenceIntervalInfo)
     /// Triggered when a remote user joins the channel.
     ///
     /// - Parameter user: Username of the user that has joined the channel.
@@ -37,6 +38,7 @@ public enum RtmPresenceEventType {
     /// Triggered when a user joins a channel without presence service.
     ///
     /// - Parameter user: Username of the user that has joined without presence.
+    @available(*, deprecated, message: "Deprecated case, do not use.")
     case errorOutOfService(user: String)
 }
 
@@ -95,7 +97,7 @@ public struct RtmUserState {
 public struct RtmPresenceEvent {
     /// The type of the presence event.
     public let type: RtmPresenceEventType
-    /// The channel type of the presence event, `message` or `stream`.
+    /// The channel type of the presence event, ``RtmChannelType/message`` or ``RtmChannelType/stream``.
     public let channelType: RtmChannelType
     /// The channel to which the presence event was triggered.
     public let channelName: String
@@ -104,7 +106,12 @@ public struct RtmPresenceEvent {
     /// The user states associated with the presence event.
     public let states: [String: String]
     /// The presence interval information. Only valid when in interval mode.
-    public let interval: RtmPresenceIntervalInfo?
+    public var interval: RtmPresenceIntervalInfo? {
+        switch self.type {
+        case .interval(let interval): return interval
+        default: return nil
+        }
+    }
 
     private static func publisherPresenceType(
         eventType: AgoraRtmPresenceEventType, publisher: String?
@@ -123,8 +130,9 @@ public struct RtmPresenceEvent {
             return .remoteLeaveChannel(user: publisher)
         } else if eventType == .remoteConnectionTimeout {
             return .remoteConnectionTimeout(user: publisher)
-        } else if eventType == .errorOutOfService {
-            return .errorOutOfService(user: publisher)
+//            errorOutOfService is deprecated
+//        } else if eventType == .errorOutOfService {
+//            return .errorOutOfService(user: publisher)
         }
         print("""
         Invalid presence:
@@ -168,7 +176,15 @@ public struct RtmPresenceEvent {
                 result[userState.userId] = stateDict
             })
         case .interval:
-            self.type = .interval
+            guard let interval = RtmPresenceIntervalInfo(presence.interval) else {
+                print("""
+                Invalid presence:
+                    Type: interval
+                    Reason: missing interval data
+                """)
+                return nil
+            }
+            self.type = .interval(interval)
         case .none: self.type = .none
         @unknown default: self.type = .none
         }
@@ -176,6 +192,5 @@ public struct RtmPresenceEvent {
         self.channelType = .init(rawValue: presence.channelType.rawValue) ?? .none
         self.channelName = presence.channelName
         self.publisher = presence.publisher
-        self.interval = .init(presence.interval)
     }
 }
