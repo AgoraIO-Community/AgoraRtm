@@ -80,6 +80,7 @@ public extension RtmPresence {
     /// event notifications.
     ///
     /// - Throws: An ``RtmErrorInfo`` error if the state update operation encounters any problems.
+    @discardableResult
     func setUserState(
         inChannel channel: RtmChannelDetails,
         to states: [String: String]
@@ -103,6 +104,7 @@ public extension RtmPresence {
     ///   - keys: An array of keys representing the state entries to be removed.
     ///   - completion: An optional callback that returns the result of the state removal operation.
     /// - Returns: A `Result` object with either the operation response or an error.
+    @discardableResult
     func removeUserState(
         inChannel channel: RtmChannelDetails,
         keys: [String]

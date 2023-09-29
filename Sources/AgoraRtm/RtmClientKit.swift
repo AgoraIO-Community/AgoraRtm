@@ -93,8 +93,7 @@ open class RtmClientKit {
     /// Asynchronously logs out of the Agora RTM system.
     ///
     /// This method can throw an ``RtmErrorInfo`` error if the logout operation fails.
-    @available(iOS 13.0.0, *)
-    @discardableResult
+    @available(iOS 13.0.0, *) @discardableResult
     public func logout() async throws -> RtmCommonResponse {
         return try CompletionHandlers.handleAsyncThrow(await agoraRtmClient.logout(), operation: #function)
     }

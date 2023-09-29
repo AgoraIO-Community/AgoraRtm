@@ -52,8 +52,8 @@ open class RtmStreamChannel: NSObject {
     /// - Throws: ``RtmErrorInfo`` if an error occurs during the join attempt.
     ///
     /// - Returns: A response confirming the result of the join attempt,
-    ///            encapsulated in an ``RtmCommonResponse`` object.
-    @available(iOS 13.0.0, *)
+    ///            currently an ``RtmCommonResponse`` object.
+    @available(iOS 13.0.0, *) @discardableResult
     public func join(
         with option: RtmJoinChannelOption
     ) async throws -> RtmCommonResponse {
@@ -75,7 +75,7 @@ open class RtmStreamChannel: NSObject {
         }
     }
 
-    @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func leave() async throws -> RtmCommonResponse {
         return try CompletionHandlers.handleAsyncThrow(await channel.leave(), operation: #function)
     }
@@ -96,7 +96,7 @@ open class RtmStreamChannel: NSObject {
         })
     }
 
-    @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func renewToken(_ token: String) async throws -> RtmCommonResponse {
         return try CompletionHandlers.handleAsyncThrow(await channel.renewToken(token), operation: #function)
     }
@@ -125,7 +125,7 @@ open class RtmStreamChannel: NSObject {
     ///   - option: The ``RtmJoinTopicOption`` to use for joining the channel.
     /// - Returns: A ``RtmCommonResponse`` object representing the result of the operation.
     /// - Throws: An error of type ``RtmErrorInfo`` if the operation fails.
-    @discardableResult @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func joinTopic(
         _ topic: String, with option: RtmJoinTopicOption? = nil
     ) async throws -> RtmCommonResponse {
@@ -156,7 +156,7 @@ open class RtmStreamChannel: NSObject {
     /// - Parameter topic: The name of the stream channel to leave.
     /// - Returns: A ``RtmCommonResponse`` object representing the result of the operation.
     /// - Throws: An error of type ``RtmErrorInfo`` if the operation fails.
-    @discardableResult @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func leaveTopic(
         _ topic: String
     ) async throws -> RtmCommonResponse {
@@ -231,7 +231,7 @@ open class RtmStreamChannel: NSObject {
     /// - Returns:
     ///   A result that either provides a successful response ``RtmCommonResponse``
     ///   or throws an error ``RtmErrorInfo``.
-    @discardableResult @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func unsubscribe(
         fromTopic topic: String, withOptions options: RtmTopicOption? = nil
     ) async throws -> RtmCommonResponse {
@@ -288,7 +288,7 @@ open class RtmStreamChannel: NSObject {
     /// - Returns: An ``RtmCommonResponse`` containing information about the published message.
     ///
     /// - Throws: ``RtmErrorInfo`` if an error occurs during the publishing process.
-    @discardableResult @available(iOS 13.0.0, *)
+    @available(iOS 13.0.0, *) @discardableResult
     public func publishTopicMessage(
         message: Codable,
         inTopic topic: String, with options: RtmPublishOptions?

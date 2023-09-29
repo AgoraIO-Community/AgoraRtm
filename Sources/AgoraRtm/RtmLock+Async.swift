@@ -15,6 +15,7 @@ extension RtmLock {
     ///   - channel: The type and name of the channel.
     ///   - ttl: The lock time-to-live in seconds.
     /// - Returns: A ``RtmCommonResponse`` object the query response or an error.
+    @discardableResult
     public func setLock(
         named lockName: String,
         forChannel channel: RtmChannelDetails,
@@ -33,6 +34,7 @@ extension RtmLock {
     ///   - lockName: The name of the lock.
     ///   - channel: The type and name of the channel.
     /// - Returns: A ``RtmCommonResponse`` object the query response or an error.
+    @discardableResult
     public func removeLock(
         named lockName: String,
         fromChannel channel: RtmChannelDetails
@@ -50,6 +52,7 @@ extension RtmLock {
     ///   - channel: The type and name of the channel.
     ///   - retry: Whether to automatically retry when acquiring the lock fails.
     /// - Returns: A ``RtmCommonResponse`` object the query response or an error.
+    @discardableResult
     public func acquireLock(
         named lockName: String,
         fromChannel channel: RtmChannelDetails,
@@ -68,6 +71,7 @@ extension RtmLock {
     ///   - lockName: The name of the lock.
     ///   - channel: The type and name of the channel.
     /// - Returns: A ``RtmCommonResponse`` object the query response or an error.
+    @discardableResult
     public func releaseLock(
         named lockName: String,
         fromChannel channel: RtmChannelDetails
@@ -85,6 +89,7 @@ extension RtmLock {
     ///   - channel: The type and name of the channel.
     ///   - userId: The user ID of the lock owner.
     /// - Returns: A ``RtmCommonResponse`` object the query response or an error.
+    @discardableResult
     public func revokeLock(
         named lockName: String,
         fromChannel channel: RtmChannelDetails,
