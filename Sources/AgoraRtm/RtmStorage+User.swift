@@ -16,8 +16,8 @@ extension RtmStorage {
     ///   - options: The options for operating the metadata. Default is nil.
     ///   - completion: The completion handler to be called with the operation result,
     ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
-    public func setUserMetadata(
-        userId: String,
+    public func setMetadata(
+        forUser userId: String,
         data: RtmMetadata,
         options: RtmMetadataOptions? = nil,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
@@ -48,8 +48,8 @@ extension RtmStorage {
     /// - Returns: On success, it returns ``RtmCommonResponse``.
     ///            On failure, it throws ``RtmErrorInfo``.
     @available(iOS 13.0.0, *) @discardableResult
-    public func setUserMetadata(
-        userId: String,
+    public func setMetadata(
+        forUser userId: String,
         data: RtmMetadata,
         options: RtmMetadataOptions? = nil
     ) async throws -> RtmCommonResponse {
@@ -74,8 +74,8 @@ extension RtmStorage {
     ///   - options: The options for operating the metadata. Default is nil.
     ///   - completion: The completion handler to be called with the operation result,
     ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
-    public func updateUserMetadata(
-        userId: String,
+    public func updateMetadata(
+        forUser userId: String,
         data: RtmMetadata,
         options: RtmMetadataOptions? = nil,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
@@ -105,8 +105,8 @@ extension RtmStorage {
     /// - Returns: On success, it returns `RtmCommonResponse`.
     ///            On failure, it throws `RtmErrorInfo`.
     @available(iOS 13.0.0, *) @discardableResult
-    public func updateUserMetadata(
-        userId: String,
+    public func updateMetadata(
+        forUser userId: String,
         data: RtmMetadata,
         options: RtmMetadataOptions? = nil
     ) async throws -> RtmCommonResponse {
@@ -128,8 +128,8 @@ extension RtmStorage {
     ///   - options: The options for operating the metadata. Default is nil.
     ///   - completion: The completion handler to be called with the operation result,
     ///                 `Result<RtmCommonResponse, RtmErrorInfo>`.
-    public func removeUserMetadata(
-        userId: String,
+    public func removeMetadata(
+        forUser userId: String,
         data: RtmMetadata,
         options: RtmMetadataOptions? = nil,
         completion: ((Result<RtmCommonResponse, RtmErrorInfo>) -> Void)? = nil
@@ -159,8 +159,8 @@ extension RtmStorage {
     /// - Returns: On success, it returns `RtmCommonResponse`.
     ///            On failure, it throws `RtmErrorInfo`.
     @available(iOS 13.0.0, *) @discardableResult
-    public func removeUserMetadata(
-        userId: String,
+    public func removeMetadata(
+        forUser userId: String,
         data: RtmMetadata,
         options: RtmMetadataOptions? = nil
     ) async throws -> RtmCommonResponse {
