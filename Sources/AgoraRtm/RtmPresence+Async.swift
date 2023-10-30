@@ -28,7 +28,7 @@ public extension RtmPresence {
     ///     }
     ///     print("\(response.totalOccupancy) users in channel")
     func getOnlineUsers(
-        in channel: RtmChannelDetails, options: RtmPresenceOptions? = nil
+        inChannel channel: RtmChannelDetails, options: RtmPresenceOptions? = nil
     ) async throws -> RtmOnlineUsersResponse {
         let (channelName, channelType) = channel.objcVersion
         await self.presence.getOnlineUser(channelName: channelName, channelType: channelType, options: nil)

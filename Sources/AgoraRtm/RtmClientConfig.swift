@@ -68,31 +68,16 @@ import AgoraRtmKit
     }
 
     /// The encryption configuration for the RTM client.
-    public enum RtmEncryptionConfig: Equatable {
-        /// No encryption.
-        case none
-        /// AES-128-GCM encryption.
-        case aes128GCM(key: String, salt: String?)
-        /// AES-256-GCM encryption.
-        case aes256GCM(key: String, salt: String?)
-    }
-
-    /// The encryption configuration for the RTM client.
     public var encryptionConfig: RtmEncryptionConfig? {
         get {
             guard let encConf = config.encryptionConfig, encConf.encryptionMode != .none,
                     let encKey = encConf.encryptionKey else {
                 return nil
             }
-            let salt = encConf.encryptionSalt
-            var saltStr: String?
-            if let salt {
-                saltStr = String(data: salt, encoding: .utf8)
-            }
             switch encConf.encryptionMode {
             case .none: return nil
-            case .AES128GCM: return .aes128GCM(key: encKey, salt: saltStr)
-            case .AES256GCM: return .aes256GCM(key: encKey, salt: saltStr)
+            case .AES128GCM: return .aes128GCM(key: encKey, salt: encConf.encryptionSalt)
+            case .AES256GCM: return .aes256GCM(key: encKey, salt: encConf.encryptionSalt)
             @unknown default: return nil
             }
         }
@@ -106,16 +91,21 @@ import AgoraRtmKit
             switch newValue {
             case .aes128GCM(let key, let salt):
                 encConfig.encryptionKey = key
-                encConfig.encryptionSalt = salt?.data(using: .utf8)
+                encConfig.encryptionSalt = salt
                 encConfig.encryptionMode = .AES128GCM
             case .aes256GCM(let key, let salt):
                 encConfig.encryptionKey = key
-                encConfig.encryptionSalt = salt?.data(using: .utf8)
+                encConfig.encryptionSalt = salt
                 encConfig.encryptionMode = .AES256GCM
             case .none: break
             }
             self._encryptionConfig = encConfig
             config.encryptionConfig = encConfig
         }
+    }
+
+    public static func encryptSaltString(salt: String?) -> Data? {
+        guard let salt else { return nil }
+        return Data(base64Encoded: salt, options: .ignoreUnknownCharacters)
     }
 }

@@ -180,7 +180,7 @@ public class RtmPresence {
     ///                 `Result<RtmPresenceGetStateResponse, RtmErrorInfo>`.
     public func getState(
         ofUser userId: String,
-        fromChannel channel: RtmChannelDetails,
+        inChannel channel: RtmChannelDetails,
         completion: @escaping (Result<RtmPresenceGetStateResponse, RtmErrorInfo>) -> Void
     ) {
         let (channelName, channelType) = channel.objcVersion
