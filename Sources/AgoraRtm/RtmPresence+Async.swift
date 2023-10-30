@@ -57,7 +57,7 @@ public extension RtmPresence {
         inChannel channel: RtmChannelDetails,
         options: RtmPresenceOptions? = nil
     ) async throws -> RtmOnlineUsersResponse {
-        try await self.getOnlineUsers(in: channel, options: options)
+        try await self.getOnlineUsers(inChannel: channel, options: options)
     }
     /// > Renamed: ``getUserChannels(for:)``
     @available(*, deprecated, renamed: "getUserChannels(for:)")
